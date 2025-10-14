@@ -1,14 +1,19 @@
 import { useState } from "react";
 import { fetchMusicData } from "../services/SearchService";
 import { useQuery } from "@tanstack/react-query";
+import { useApiStore } from "../store/GlobalApiStore";
 
 function MusicSearch() {
+
+  const setMusicData = useApiStore((state) => state.setMusicData)
   const [searchTerm, setSearchTerm] = useState("");
+
 
   const { data, isLoading, isError, error, refetch } = useQuery({
     queryKey: ["MusicData", searchTerm],
     queryFn: () => fetchMusicData(searchTerm),
     enabled: false,
+    onSuccess: (data) => setMusicData(data)
   });
 
   const handleSearch = async (e) => {
