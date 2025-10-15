@@ -21,7 +21,7 @@ export const fetchMusicData = async (searchTerm) => {
 
 
      
-    return res.data
+    return res.data.data
 
 
   } catch (error) {
