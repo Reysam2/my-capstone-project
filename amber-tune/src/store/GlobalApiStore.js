@@ -1,17 +1,15 @@
 import { create } from "zustand";
 
-import { persist } from "zustand/middleware";
 
 export const useApiStore = create(
-  persist((set) => ({
+  (set) => ({
       // state
       musicData: [],
+      isVisible: false,
 
       // actions
       setMusicData: (data) => set({ musicData: data }),
-    }),
-    { name: 'MusicStorage' }
-
-  ),
+      setIsVisible:  (state) => set({isVisible: state})
+    }) 
 
 )
