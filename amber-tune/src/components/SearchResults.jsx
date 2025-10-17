@@ -67,16 +67,37 @@ function SearchResults() {
         storedMusicData.length > 0 && (
           <div
             id="search_card"
-            className=" w-[100%] flex  justify-center fixed inset-0 items-start overflow-y-auto bg-amber/70 backdrop-blur-md z-50  "
+            className="   flex  justify-center fixed inset-[-6rem] items-center overflow-y-auto bg-amber-70 backdrop-blur-md z-50  border-red-400"
           >
-            <div className=" bg-gradient-to-br from-amber-100 via-amber-200 to-amber-100   border-amber-50 h-[45rem] mt-10 rounded-xl text-amber-900 flex flex-col w-[29.5rem] sm:w-[67rem] relative max-sm:items-center pt-6 shadow-xl drop-shadow-xl overflow-scroll  ">
-              <div className="w-[100%] flex justify-end items-center h-[5rem]     ">
+            <div className=" bg-gradient-to-br from-amber-100 via-amber-200 to-amber-100   border-amber-50 h-[45rem] mt-10 rounded-xl text-amber-900 flex flex-col w-[29.5rem] sm:w-[67rem] relative max-sm:items-center pt-6 shadow-xl drop-shadow-xl overflow-y-scroll overflow-x-clip transition-all duration-200 ease-in-out ">
+              <div className="w-[100%] flex justify-end items-center h-[5rem]">
                 <button
                   id="searchCardBtn"
                   onClick={handleCloseCard}
                   className="cursor-pointer fixed z-10 top-[-0.6rem] right-[-0.6rem] "
                 >
-               <svg xmlns="http://www.w3.org/2000/svg" width="38" height="38" viewBox="0 0 24 24"><g fill="none"><path fill="#7b3306" fill-opacity="1" d="M18.6 3H5.4A2.4 2.4 0 0 0 3 5.4v13.2A2.4 2.4 0 0 0 5.4 21h13.2a2.4 2.4 0 0 0 2.4-2.4V5.4A2.4 2.4 0 0 0 18.6 3"/><path stroke="#fef3c6" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="1.8" d="m7.757 16.243l8.486-8.486m0 8.486L7.757 7.757M5.4 3h13.2A2.4 2.4 0 0 1 21 5.4v13.2a2.4 2.4 0 0 1-2.4 2.4H5.4A2.4 2.4 0 0 1 3 18.6V5.4A2.4 2.4 0 0 1 5.4 3"/></g></svg>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="38"
+                    height="38"
+                    viewBox="0 0 24 24"
+                  >
+                    <g fill="none">
+                      <path
+                        fill="#7b3306"
+                        fill-opacity="1"
+                        d="M18.6 3H5.4A2.4 2.4 0 0 0 3 5.4v13.2A2.4 2.4 0 0 0 5.4 21h13.2a2.4 2.4 0 0 0 2.4-2.4V5.4A2.4 2.4 0 0 0 18.6 3"
+                      />
+                      <path
+                        stroke="#fef3c6"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-miterlimit="10"
+                        stroke-width="1.8"
+                        d="m7.757 16.243l8.486-8.486m0 8.486L7.757 7.757M5.4 3h13.2A2.4 2.4 0 0 1 21 5.4v13.2a2.4 2.4 0 0 1-2.4 2.4H5.4A2.4 2.4 0 0 1 3 18.6V5.4A2.4 2.4 0 0 1 5.4 3"
+                      />
+                    </g>
+                  </svg>
                 </button>
               </div>
 

@@ -3,7 +3,7 @@ import { fetchMusicData } from "../services/SearchService";
 import { useQuery } from "@tanstack/react-query";
 import { useApiStore } from "../store/GlobalApiStore";
 
-function MusicSearch() {
+function SearchBar() {
   const setMusicData = useApiStore((state) => state.setMusicData);
   const setIsVisible = useApiStore((state) => state.setIsVisible);
 
@@ -76,4 +76,4 @@ function MusicSearch() {
   );
 }
 
-export default MusicSearch;
+export default SearchBar;
