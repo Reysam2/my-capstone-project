@@ -6,10 +6,11 @@ export const useApiStore = create(
       // state
       musicData: [],
       isVisible: false,
-
+      scrollAmount: 250,
+       
       // actions
       setMusicData: (data) => set({ musicData: data }),
-      setIsVisible:  (state) => set({isVisible: state})
+      // search results close button logic
+      setIsVisible:  (state) => set({isVisible: state}),
     }) 
-
-)
+  )

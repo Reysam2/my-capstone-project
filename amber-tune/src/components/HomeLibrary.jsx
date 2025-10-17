@@ -1,21 +1,24 @@
-import { useRef } from "react";
+import {useRef} from "react";
 import SearchBar from "./SearchBar";
 import SearchResults from "./SearchResults";
+import { useApiStore } from "../store/GlobalApiStore";
 
 function HomeLibrary() {
-  const scrollRef = useRef(null);
+  const scrollRef = useRef();
+  const recentRef = useRef();
+  const recomRef = useRef();
 
-  const scroll = (direction) => {
-    const { current } = scrollRef;
+  const { scrollAmount } = useApiStore();
+  useApiStore();
 
-    if (current) {
-      const scrollamount = 300;
-
-      current.scrollBy({
-        left: direction === "left" ? -scrollamount : scrollamount,
-        behavior: "smooth",
-      });
-    }
+  // Reusable scroll handler
+  const handleScroll = (ref, direction) => {
+    if (!ref.current) return;
+    const scrollValue = direction === "left" ? -scrollAmount : scrollAmount;
+    ref.current.scrollBy({
+      left: scrollValue,
+      behavior: "smooth",
+    });
   };
 
   return (
@@ -33,7 +36,7 @@ function HomeLibrary() {
               {/* left scroll button */}
               <button
                 className=" absolute left-3 h-3 cursor-pointer opacity-50 hover:opacity-100 shadow-[20rem] "
-                onClick={() => scroll("left")}
+                onClick={() => handleScroll(scrollRef, "left")}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -54,7 +57,7 @@ function HomeLibrary() {
               {/* right scroll b */}
               <button
                 className="absolute right-3 h-3 cursor-pointer opacity-50 hover:opacity-100 shadow-[20rem] shadow-amber-300 drop-shadow-2xl"
-                onClick={() => scroll("right")}
+                onClick={() => handleScroll(scrollRef, "right")}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -107,7 +110,10 @@ function HomeLibrary() {
 
             <div className="w-full bg-transparent h-[3rem] flex justify-around absolute top-20 z-10">
               {/* left scroll button */}
-              <button className=" absolute left-3 h-3 cursor-pointer opacity-70 hover:opacity-100">
+              <button
+                onClick={() => handleScroll(recentRef, "left")}
+                className=" absolute left-3 h-3 cursor-pointer opacity-70 hover:opacity-100"
+              >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
@@ -126,7 +132,10 @@ function HomeLibrary() {
               </button>
 
               {/* right scroll b */}
-              <button className="absolute right-3 h-3 cursor-pointer opacity-70 hover:opacity-100 shadow-2xl drop-shadow-2xl">
+              <button
+                onClick={() => handleScroll(recentRef, "right")}
+                className="absolute right-3 h-3 cursor-pointer opacity-70 hover:opacity-100 shadow-2xl drop-shadow-2xl"
+              >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="25"
@@ -152,8 +161,11 @@ function HomeLibrary() {
                 </p>
               </div>
             </div>
-            {/* genres list */}
-            <div className=" flex gap-10 px-13 py-2 overflow-x-hidden     ">
+            {/* recently played list */}
+            <div
+              ref={recentRef}
+              className=" flex gap-10 px-13 py-2 overflow-x-hidden    "
+            >
               {/* genre cards */}
               {Array.from({ length: 10 }).map((_, i) => (
                 <div
@@ -183,7 +195,10 @@ function HomeLibrary() {
 
             <div className="w-full bg-transparent h-[3rem] flex justify-around absolute top-20 z-10">
               {/* left scroll button */}
-              <button className=" absolute left-3 h-3 cursor-pointer opacity-70 hover:opacity-100">
+              <button
+                onClick={() => handleScroll(recomRef, "left")}
+                className=" absolute left-3 h-3 cursor-pointer opacity-70 hover:opacity-100"
+              >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
@@ -202,7 +217,10 @@ function HomeLibrary() {
               </button>
 
               {/* right scroll b */}
-              <button className="absolute right-3 h-3 cursor-pointer opacity-70 hover:opacity-100 shadow-2xl drop-shadow-2xl">
+              <button
+                onClick={() => handleScroll(recomRef, "right")}
+                className="absolute right-3 h-3 cursor-pointer opacity-70 hover:opacity-100 shadow-2xl drop-shadow-2xl"
+              >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="25"
@@ -229,7 +247,10 @@ function HomeLibrary() {
               </div>
             </div>
             {/* genres list */}
-            <div className=" flex gap-10 px-13 py-2 overflow-x-hidden     ">
+            <div
+              ref={recomRef}
+              className=" flex gap-10 px-13 py-2 overflow-x-hidden     "
+            >
               {/* genre cards */}
               {Array.from({ length: 10 }).map((_, i) => (
                 <div
