@@ -14,10 +14,11 @@ function HomeLibrary() {
   // Reusable scroll handler
   const handleScroll = (ref, direction) => {
     if (!ref.current) return;
-    const scrollValue = direction === "left" ? -scrollAmount : scrollAmount;
+    const scrollValue = direction === "left"  || direction === "top"? -scrollAmount : scrollAmount;
     ref.current.scrollBy({
       left: scrollValue,
-      behavior: "smooth",
+      top: scrollValue,
+      behavior: "smooth" 
     });
   };
 
@@ -25,60 +26,34 @@ function HomeLibrary() {
     <>
       <SearchBar />
       <SearchResults />
-      <div className="  h-full w-full mt-15 overflow-y-auto   overflow-x-clip ">
+      <div className="  h-full w-full mt-15 overflow-y-auto  ">
         {/* genres container */}
 
         <div className=" w-[100%] h-[25rem] flex flex-col mt-10 p-4  rounded-xl relative">
-          <div className="  w-full h-[25rem] flex flex-col justify-around relative ">
+          <div className="  w-full h-[20rem] flex flex-col justify-around relative ">
             {/* scroll buttons */}
 
-            <div className="w-full bg-transparent h-[3rem] flex justify-around absolute top-25 z-10 ">
+            <div className="w-[5rem]  max-sm:right-[1rem]    h-[12rem] flex flex-col  items-end absolute right-25 z-10  snap-y-mandatory">
               {/* left scroll button */}
               <button
-                className=" absolute left-3 h-3 cursor-pointer opacity-50 hover:opacity-100 shadow-[20rem] "
-                onClick={() => handleScroll(scrollRef, "left")}
+                className=" absolute top-0 h-3 right-5 cursor-pointer opacity-50 hover:opacity-100 active:translate-y-[-0.7rem] shadow-[20rem] hover:scale-130 transition-all duration-200 ease-in-out "
+                onClick={() => handleScroll(scrollRef, "top")}
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 15 15"
-                >
-                  <path
-                    fill="none"
-                    stroke="#fef3c6"
-                    stroke-linecap="square"
-                    d="M10 14L3 7.5L10 1"
-                    stroke-width="6"
-                  />
-                </svg>
+               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 15 15"><path fill="none" stroke="#fef3c6" stroke-linecap="square" d="m1 10l6.5-7l6.5 7" stroke-width="6"/></svg>
               </button>
 
               {/* right scroll b */}
               <button
-                className="absolute right-3 h-3 cursor-pointer opacity-50 hover:opacity-100 shadow-[20rem] shadow-amber-300 drop-shadow-2xl"
+                className="absolute bottom-3 h-3 right-5 cursor-pointer opacity-50 hover:opacity-100 shadow-[20rem] shadow-amber-300 drop-shadow-2xl hover:scale-130 active:translate-y-[0.7rem] transition-all duration-200 ease-in-out "
                 onClick={() => handleScroll(scrollRef, "right")}
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 15 15"
-                >
-                  <path
-                    fill="none"
-                    stroke="#fef3c6"
-                    stroke-linecap="square"
-                    d="m5 14l7-6.5L5 1"
-                    stroke-width="6"
-                  />
-                </svg>
+               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 15 15"><path fill="none" stroke="#fef3c6" stroke-linecap="square" d="m14 5l-6.5 7L1 5" stroke-width="6"/></svg>
               </button>
             </div>
 
             {/* genres heading */}
             <div className="">
-              <div className="ml-14">
+              <div className="ml-[17rem] mb-5">
                 <p className="font-extrabold text-amber-200 text-[clamp(2rem,2.5vw,3rem)]">
                   Genres
                 </p>
@@ -87,7 +62,7 @@ function HomeLibrary() {
             {/* genres list */}
             <div
               ref={scrollRef}
-              className=" flex gap-10 px-13 py-2 overflow-x-hidden   relative "
+              className=" w-[80%]    gap-10 gap-y-17 px-13 py-2 overflow-y-hidden grid grid-cols-1  sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 relative  self-center"
             >
               {/* genre cards */}
               {Array.from({ length: 10 }).map((_, i) => (
@@ -109,10 +84,11 @@ function HomeLibrary() {
             {/* scroll buttons */}
 
             <div className="w-full bg-transparent h-[3rem] flex justify-around absolute top-20 z-10">
+              
               {/* left scroll button */}
-              <button
+              <button  
                 onClick={() => handleScroll(recentRef, "left")}
-                className=" absolute left-3 h-3 cursor-pointer opacity-70 hover:opacity-100"
+                className="absolute left-3 h-3 cursor-pointer opacity-70 hover:opacity-100 active:translate-x-[-0.7rem] hover:scale-130 transition-all duration-200 ease-in-out"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -134,7 +110,7 @@ function HomeLibrary() {
               {/* right scroll b */}
               <button
                 onClick={() => handleScroll(recentRef, "right")}
-                className="absolute right-3 h-3 cursor-pointer opacity-70 hover:opacity-100 shadow-2xl drop-shadow-2xl"
+                className="absolute right-3 h-3 cursor-pointer opacity-70 hover:opacity-100 shadow-2xl drop-shadow-2xl active:translate-x-[0.7rem] hover:scale-130 transition-all duration-200 ease-in-out"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -197,7 +173,7 @@ function HomeLibrary() {
               {/* left scroll button */}
               <button
                 onClick={() => handleScroll(recomRef, "left")}
-                className=" absolute left-3 h-3 cursor-pointer opacity-70 hover:opacity-100"
+                className=" absolute left-3 h-3 cursor-pointer opacity-70 hover:opacity-100 active:translate-x-[-0.7rem] hover:scale-130 transition-all duration-200 ease-in-out"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -219,7 +195,7 @@ function HomeLibrary() {
               {/* right scroll b */}
               <button
                 onClick={() => handleScroll(recomRef, "right")}
-                className="absolute right-3 h-3 cursor-pointer opacity-70 hover:opacity-100 shadow-2xl drop-shadow-2xl"
+                className="absolute right-3 h-3 cursor-pointer opacity-70 hover:opacity-100 shadow-2xl drop-shadow-2xl active:translate-x-[0.7rem] hover:scale-130 transition-all duration-200 ease-in-out"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"

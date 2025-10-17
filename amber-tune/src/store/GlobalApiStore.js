@@ -6,7 +6,7 @@ export const useApiStore = create(
       // state
       musicData: [],
       isVisible: false,
-      scrollAmount: 250,
+      scrollAmount: 200,
        
       // actions
       setMusicData: (data) => set({ musicData: data }),
