@@ -1,6 +1,6 @@
 function MusicPlayer() {
   return (
-    <div className="grid md:grid-cols-2 max-sm:grid-cols-1  justify-items-center place-items-center max-sm:flex max-sm:flex-col gap-48   bg-red-400 p-6">
+    <div className="grid md:grid-cols-2 max-sm:grid-cols-1  justify-items-center place-items-center max-sm:flex max-sm:flex-col gap-48 p-6">
       {/* music player card */}
       <div className="bg-amber-200 min-w-[36rem] max-w-[36rem] max-sm:min-w-[clamp(29rem,1.5vw,33rem)] h-[46rem] p-3 flex flex-col justify-center items-center rounded-2xl mt-26
       ">
@@ -159,10 +159,12 @@ function MusicPlayer() {
       </div>
 
       {/* about and lyrics info block */}
-      <div className="bg-gray-500 flex flex-col items-center  justify-center w-full h-[45rem]   max-sm:min-w-[30rem] mt-28 max-sm:mt-[-5rem]" >
-        <div className=" h-[10rem] bg-amber-500">About Artist</div>
-        <div className="bg-red-600 h-[10rem]  mt-14 active:h-[30rem]">
-          Lyrics
+      <div className="bg-amber-900 flex flex-col items-center  justify-center w-full h-[45rem]  rounded-2xl  max-sm:min-w-[30rem] mt-28 max-sm:mt-[-5rem]  max-sm:h-[30rem] p-5"  >
+        <div className=" h-[18rem] w-[80%]  max-sm:w-[30rem] text-[clamp(1.7rem,1.5vw,2rem)]  bg-amber-200 rounded-xl text-amber-900">About Artist</div>
+        <div className=" h-[10rem]  mt-20 active:h-[30rem] w-[30rem] text-[clamp(1.7rem,1.5vw,2rem)] rounded-xl  border border-amber-200 ">
+        
+
+          <p className="text-6xl text-amber-200">  Lyrics <br/>Coming Soon</p>
         </div>
       </div>
     </div>
