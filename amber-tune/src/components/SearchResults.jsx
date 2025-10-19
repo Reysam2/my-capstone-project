@@ -64,12 +64,10 @@ const playMusic = (preview) => {
   //  it gets sent to the music player
   const songToPlayer = (id) => {
     setSelectedSong(id);
-
     audio.pause();
     audio.src = "";
     audio.currentTime = 0;
     setIsPlaying(false);
-
     navigate("/player", { replace: true });
   };
 

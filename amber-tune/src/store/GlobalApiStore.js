@@ -14,13 +14,13 @@ export const useApiStore = create(persist(
     currentSong: null,
 
     playerData: {
-  id: null,
-  title_short: "",
-  album: { cover_medium: "" },
-  artist: { name: "", link: "" },
-  preview: "",
-},
-
+      id: 0,
+      title_short: "",
+      link: "",
+      album: { cover_medium: "" },
+      artist: { name: "" },
+      preview: "",
+    },
 
 
 
@@ -41,17 +41,33 @@ export const useApiStore = create(persist(
 
     // set playerData
 
-     setPlayerData: (data) =>
-  set({
-    playerData: {
-      id: data.id,
-      title_short: data.title_short,
-      album: { cover_medium: data.album.cover_medium },
-      artist: { name: data.artist.name, link: data.artist.link },
-      preview: data.preview,
-    },
-  }),
+    setPlayerData: (data) =>
+      set({
+        playerData: {
+          id: data.id,
+          link: data.link,
+          title_short: data.title_short,
+          album: { cover_medium: data.album.cover_medium },
+          artist: {
+            name: data.artist.name
+          },
+          preview: data.preview,
+        },
+      }),
 
+      resetPlayerData: (data) =>
+      set({
+        playerData: {
+          id: data,
+          link: data,
+          title_short: data,
+          album: { cover_medium: data},
+          artist: {
+            name: data
+          },
+          preview: data,
+        },
+      }),
 
 
 

@@ -1,7 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { fetchMusicData } from "../services/SearchService";
 import { useQuery } from "@tanstack/react-query";
 import { useApiStore } from "../store/GlobalApiStore";
+import AmberTuneState from "./AmberTuneState";
+import { useNavigate } from "react-router-dom";
+
 
 function SearchBar() {
   const setMusicData = useApiStore((state) => state.setMusicData);
@@ -13,7 +16,7 @@ function SearchBar() {
     queryKey: ["MusicData", searchTerm],
     queryFn: () => fetchMusicData(searchTerm),
     enabled: false,
-    refetchOnWindowFocus: false,
+    refetchOnWindowFocus: true,
   });
 
   const handleSearch = async (e) => {
@@ -27,11 +30,22 @@ function SearchBar() {
     }
   };
 
-  if (isLoading) return <p>Loading...</p>;
-  if (isError) return <p>Something went wrong: {error.message}</p>;
+  const navigate = useNavigate();
+
+
+  // navigate on error (not during render)
+  useEffect(() => {
+    if (isError) navigate("/error-page");
+  }, [isError, navigate]);
+
+  // handle loading and error states
+  if (isLoading) return <AmberTuneState isLoading={true} />;
+  if (isError) return <AmberTuneState isError={true} error={error?.message} />;
+
+
   return (
-    <div className="w-[100%] flex justify-center ">
-      <div className="w-[35rem] h-[5rem] flex items-center justify-center  ">
+    <div className="w-[100%] flex justify-center flex-col items-center">
+      <div className="w-[clamp(34rem,0.5vw,35rem)] h-[5rem] flex items-center justify-center  ">
         <form onSubmit={handleSearch} className="w-full min-w-[2rem] mt-5">
           {/* form field */}
           <div className=" flex items-center justify-center min-w-[2rem] relative">
@@ -71,6 +85,21 @@ function SearchBar() {
             </button>
           </div>
         </form>
+      </div>
+      <div
+        className="text-amber-200    right-50  flex flex-col
+      transition-all animate-pulse duration-200 ease-in-out justify-center items-center mt-5 p"
+      >
+        <h2 className="text-[clamp(1.8rem,2.5vw,2.5rem)]"> 
+          We know! Don't panic,
+        </h2>
+        <h1 className="text-[clamp(2rem,2.5vw,2.4rem)] text-center">
+          Life Without Music Feels Empty, Just Like This Page.
+        </h1>
+        <h1 className="text-[clamp(2rem,2.5vw,3rem)]">Good Music Never Dies!</h1>
+        <h2 className="text-[clamp(1.8rem,2.5vw,2.5rem)]">
+          Search to see the Magic.
+        </h2>
       </div>
     </div>
   );
