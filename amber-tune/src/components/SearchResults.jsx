@@ -32,33 +32,36 @@ function SearchResults() {
   } = firstSong;
 
   // logic for playing music
- const playMusic = (preview) => { 
-
-  // if a different song is clicked, stop the old one
-  if (audio.src !== preview) {
-    audio.pause();
-    audio.src = preview;  // set new audio source
-    audio.currentTime = 0;
-    audio.play();
-    setIsPlaying(true);
-  } else {
-    // toggle play/pause for the same song
-    if (audio.paused) {
+const playMusic = (preview) => {
+    // if a different song is clicked, stop the old one
+    if (audio.src !== preview) {
+      audio.pause();
+      audio.src = preview; // set new audio source
+      audio.currentTime = 0;
       audio.play();
       setIsPlaying(true);
     } else {
-      audio.pause();
-      setIsPlaying(false);
+      // toggle play/pause for the same song
+      if (audio.paused) {
+        audio.play();
+        setIsPlaying(true);
+      } else {
+        audio.pause();
+        setIsPlaying(false);
+      }
     }
-  }
 
-  audio.onended = () => setIsPlaying(false);
-};
+     setCurrentSong(preview)
+
+    audio.onended = () => setIsPlaying(false); 
+  };
   const handleCloseCard = () => {
     if (!isVisible) return null;
     setIsVisible(false);
   };
 
+  // id of the selected song from search result
+  //  it gets sent to the music player
   const songToPlayer = (id) => {
     setSelectedSong(id);
 

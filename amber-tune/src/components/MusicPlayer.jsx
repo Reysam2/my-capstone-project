@@ -15,8 +15,10 @@ function MusicPlayer() {
   const trackId = useApiStore((state) => state.trackId);
   const setTrackId = useApiStore((state) => state.setTrackId);
 
-  const [currentSong, setCurrentSong] = useState(null);
+ 
   const audio = useAudioStore((state) => state.audioRef);
+
+  const { playerData, setPlayerData ,currentSong, setCurrentSong } = useApiStore();
 
   const location = useLocation();
 
@@ -62,19 +64,22 @@ function MusicPlayer() {
       }
     }
 
-    audio.onended = () => setIsPlaying(false);
+     setCurrentSong(preview)
+
+    audio.onended = () => setIsPlaying(false); 
   };
 
   // get the song whose id matches with that of the  selected song
+  // song selected by the user from the search result page
   const song =
     musicData && musicData.length > 0
       ? musicData.find((music) => music.id === selectedSong)
       : null;
 
-  const trackSong =
-    musicData?.length > 0
-      ? musicData.find((music) => music.id === song.id)
-      : null;
+  // const trackSong =
+  //   musicData?.length > 0
+  //     ? musicData.find((music) => music.id === song.id)
+  //     : null;
 
   console.log("TrackId", trackId);
 
@@ -91,8 +96,17 @@ function MusicPlayer() {
     enabled: !!albumId,
   });
 
-  // music progress bar logic
+  // song clicked by the user in the music player
+  let userTrack = albumData?.tracks?.data.find(
+    (trackSong) => trackSong.id === trackId
+  );
 
+
+
+  // setPlayerData(userTrack)
+  console.log("userTrack", userTrack);
+
+  // music progress bar logic
   //  Handle progress tracking and song switching
   useEffect(() => {
     if (!audio) return;
@@ -100,8 +114,7 @@ function MusicPlayer() {
     if (!audio.paused) {
       audio.pause();
       audio.currentTime = 0; // reset progress
-    }
-    setCurrentSong(song);
+    } 
     setCurrentSong(song.preview);
 
     // when a new song is selected, load and play it
@@ -136,26 +149,37 @@ function MusicPlayer() {
   }, [song]);
 
   if (!song) return null;
-  if (!trackSong) return <p>No song selected</p>;
+  // if (!trackSong) return <p>No song selected</p>;
 
-  const {
+  let {
     id,
     title_short,
     album: { cover_medium },
     artist: { name, link },
     preview,
-  } = song;
+  } = playerData || {};
 
   if (isLoading) return <p>Loading...</p>;
   if (isError) return <p>Something went wrong: {error.message}</p>;
 
-  const userTrack = albumData?.tracks?.data.find(
-    (trackSong) => trackSong.id === trackId
-  );
-
+  console.log("songData", song);
+  console.log("userTrack", userTrack);
   // const handleTracks = (id) => {
 
   // }
+
+
+const sendUserSelectedTrack = (track) => {
+  setPlayerData(track);         // update playerData in store
+  setIsPlaying(true);           // mark as playing
+  audio.src = track.preview;    // set new audio source
+  audio.currentTime = 0;
+  audio.play();                 // play new track
+};
+
+
+
+
 
   return (
     <div className="grid md:grid-cols-2 max-sm:grid-cols-1  justify-items-center place-items-center max-sm:flex max-sm:flex-col gap-48 p-6">
@@ -237,11 +261,11 @@ function MusicPlayer() {
               <button
                 onClick={() => {
                   playMusic(preview);
-                  setCurrentSong(preview);
+                 ;
                 }}
                 className="cursor-pointer"
               >
-                {isPlaying && currentSong === song.preview ? (
+                {isPlaying && currentSong? (
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     height="32"
@@ -357,7 +381,12 @@ function MusicPlayer() {
           <div>
             {albumData?.tracks?.data?.length > 0 ? (
               albumData.tracks.data.map((track) => (
-                <button onClick={() => setTrackId(track.id)}>
+                <button
+                  onClick={() => {
+                    setTrackId(track.id); 
+                    sendUserSelectedTrack(track);
+                  }}
+                >
                   <div
                     key={track.id}
                     className="w-[95%] h-[6rem]   flex justify-around  border-b-[0.1rem] rounded-[3rem]  shadow-2xl drop-shadow-2xl hover:shadow-2xl hover:drop-shadow-xl hover:shadow-amber-700 hover:scale-105 transition-all duration-200 ease-in-out  mb-4

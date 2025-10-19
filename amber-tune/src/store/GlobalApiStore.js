@@ -13,6 +13,16 @@ export const useApiStore = create(persist(
     trackId: 0,
     currentSong: null,
 
+    playerData: {
+  id: null,
+  title_short: "",
+  album: { cover_medium: "" },
+  artist: { name: "", link: "" },
+  preview: "",
+},
+
+
+
 
     // actions
     setMusicData: (data) => set({ musicData: data }),
@@ -23,13 +33,35 @@ export const useApiStore = create(persist(
     // set album data with the album data from the api
     setAlbumData: (data) => set({ albumData: data }),
     setIsPlaying: (state) => set({ isPlaying: state }),
-    // track Is 
+    // track Id 
     setTrackId: (id) => set({ trackId: id }),
 
-    setCurrentSong: (preview) => set({ currentSong: preview })
+    setCurrentSong: (song) => set({ currentSong: song }),
+
+
+    // set playerData
+
+     setPlayerData: (data) =>
+  set({
+    playerData: {
+      id: data.id,
+      title_short: data.title_short,
+      album: { cover_medium: data.album.cover_medium },
+      artist: { name: data.artist.name, link: data.artist.link },
+      preview: data.preview,
+    },
+  }),
+
+
+
 
   }), { name: "stored-music-data" }))
 
+
+
+
+
+// non serialized data. don't know what that means lol
 export const useAudioStore = create((set) => ({
   audioRef: new Audio(),
 
