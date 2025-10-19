@@ -14,7 +14,7 @@ export const useApiStore = create(persist(
     currentSong: null,
 
     playerData: {
-  id: null,
+  id: 0,
   title_short: "",
   album: { cover_medium: "" },
   artist: { name: "", link: "" },

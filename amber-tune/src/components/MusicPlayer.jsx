@@ -50,6 +50,7 @@ function MusicPlayer() {
     if (audio.src !== preview) {
       audio.pause();
       audio.src = preview; // set new audio source
+      audio.load()
       audio.currentTime = 0;
       audio.play();
       setIsPlaying(true);

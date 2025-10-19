@@ -1,8 +1,8 @@
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 import SearchBar from "./SearchBar";
 import SearchResults from "./SearchResults";
 import { useApiStore, useAudioStore } from "../store/GlobalApiStore";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom"; 
 
 function HomeLibrary() {
   const navigate = useNavigate();
@@ -63,9 +63,8 @@ function HomeLibrary() {
     audio.currentTime = 0;
     setIsPlaying(false);
     setPlayerData(recentSongsObj);
-    audio.load();
-    // audio.play();
     navigate("/player", { replace: true });
+    audio.load(); 
   };
 
   //recommendations base on user searched history
@@ -78,11 +77,28 @@ function HomeLibrary() {
   return shuffled.slice(0, count); 
 }
 
-const recommendedMusic = getRandomSongs(recentSongs, 10);
+const [randomSongs, setRandomSongs] = useState([]) 
+
+
+  useEffect(() => {
+    // do an initial shuffle
+    setRandomSongs(getRandomSongs(recentSongs, 10));
+
+    // start reshuffling every 10 seconds
+    const interval = setInterval(() => {
+      const recommendedMusic = getRandomSongs(recentSongs, 10);
+      setRandomSongs(recommendedMusic); 
+    }, 10000);
+
+    // clean up interval when component unmounts
+    return () => clearInterval(interval);
+  }, []); // rerun if recentSongs changes
 
 
 
-  return (
+
+
+return(
     <>
       <SearchBar />
       <SearchResults />
@@ -326,8 +342,8 @@ hover:drop-shadow-amber-700 hover:drop-shadow-2xl hover:scale-90 transition-all 
               className=" flex gap-10 px-13 py-2 overflow-x-hidden     "
             >
               {/* genre cards */}
-              {Array.isArray(recommendedMusic) &&
-                recommendedMusic.map((song) => (
+              {Array.isArray(randomSongs) &&
+                randomSongs.map((song) => (
                   <div
                     onClick={() => {songToPlayer(song.id); 
                     }}

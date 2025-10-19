@@ -13,8 +13,7 @@ function SearchBar() {
     queryKey: ["MusicData", searchTerm],
     queryFn: () => fetchMusicData(searchTerm),
     enabled: false,
-    refetchOnWindowFocus: false,
-    staleTime: 10000
+    refetchOnWindowFocus: true, 
   });
 
   const handleSearch = async (e) => {
