@@ -1,24 +1,196 @@
+import { useApiStore } from "../store/GlobalApiStore";
+import { useAudioStore } from "../store/GlobalApiStore";
+import { Link } from "react-router-dom";
+import { fetchAlbumData } from "../services/AlbumSearchService";
+import { useQuery } from "@tanstack/react-query";
+import { useRef, useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
+
 function MusicPlayer() {
+  const [progress, setProgress] = useState(0);
+  const selectedSong = useApiStore((state) => state.selectedSong);
+  const musicData = useApiStore((state) => state.musicData);
+  const isPlaying = useApiStore((state) => state.isPlaying);
+  const setIsPlaying = useApiStore((state) => state.setIsPlaying);
+  const trackId = useApiStore((state) => state.trackId);
+  const setTrackId = useApiStore((state) => state.setTrackId);
+
+  const [currentSong, setCurrentSong] = useState(null);
+  const audio = useAudioStore((state) => state.audioRef);
+
+  const location = useLocation();
+
+  const playerRoute = "/player";
+  // track previous pathname
+  const prevPathRef = useRef(location.pathname);
+
+  // reset audio when i switch pages
+
+  // Reset audio when leaving /player
+
+  useEffect(() => {
+    if (
+      prevPathRef.current.startsWith(playerRoute) &&
+      !location.pathname.startsWith(playerRoute)
+    ) {
+      audio.pause();
+      audio.currentTime = 0;
+      audio.src = "";
+      audio.load();
+      setIsPlaying(false);
+    }
+    prevPathRef.current = location.pathname;
+  }, [location.pathname, audio, setIsPlaying]);
+
+  // logic for playing music
+  const playMusic = (preview) => {
+    // if a different song is clicked, stop the old one
+    if (audio.src !== preview) {
+      audio.pause();
+      audio.src = preview; // set new audio source
+      audio.currentTime = 0;
+      audio.play();
+      setIsPlaying(true);
+    } else {
+      // toggle play/pause for the same song
+      if (audio.paused) {
+        audio.play();
+        setIsPlaying(true);
+      } else {
+        audio.pause();
+        setIsPlaying(false);
+      }
+    }
+
+    audio.onended = () => setIsPlaying(false);
+  };
+
+  // get the song whose id matches with that of the  selected song
+  const song =
+    musicData && musicData.length > 0
+      ? musicData.find((music) => music.id === selectedSong)
+      : null;
+
+  const trackSong =
+    musicData?.length > 0
+      ? musicData.find((music) => music.id === song.id)
+      : null;
+
+  console.log("TrackId", trackId);
+
+  const albumId = song?.album?.id;
+
+  const {
+    data: albumData,
+    isLoading,
+    isError,
+    error,
+  } = useQuery({
+    queryKey: ["AlbumData", albumId],
+    queryFn: () => fetchAlbumData(albumId),
+    enabled: !!albumId,
+  });
+
+  // music progress bar logic
+
+  //  Handle progress tracking and song switching
+  useEffect(() => {
+    if (!audio) return;
+    // Stop current audio if something is playing
+    if (!audio.paused) {
+      audio.pause();
+      audio.currentTime = 0; // reset progress
+    }
+    setCurrentSong(song);
+    setCurrentSong(song.preview);
+
+    // when a new song is selected, load and play it
+    if (song?.preview) {
+      audio.src = song.preview;
+      audio.load();
+      audio.play();
+      setIsPlaying(true);
+      setProgress(0);
+    }
+
+    // update progress continuously
+    const updateProgress = () => {
+      const percent = (audio.currentTime / audio.duration) * 100;
+      setProgress(percent || 0);
+    };
+
+    // handle song end
+    const handleEnded = () => {
+      setIsPlaying(false);
+      setProgress(0);
+      setCurrentSong(null);
+    };
+
+    audio.addEventListener("timeupdate", updateProgress);
+    audio.addEventListener("ended", handleEnded);
+
+    return () => {
+      audio.removeEventListener("timeupdate", updateProgress);
+      audio.removeEventListener("ended", handleEnded);
+    };
+  }, [song]);
+
+  if (!song) return null;
+  if (!trackSong) return <p>No song selected</p>;
+
+  const {
+    id,
+    title_short,
+    album: { cover_medium },
+    artist: { name, link },
+    preview,
+  } = song;
+
+  if (isLoading) return <p>Loading...</p>;
+  if (isError) return <p>Something went wrong: {error.message}</p>;
+
+  const userTrack = albumData?.tracks?.data.find(
+    (trackSong) => trackSong.id === trackId
+  );
+
+  // const handleTracks = (id) => {
+
+  // }
+
   return (
     <div className="grid md:grid-cols-2 max-sm:grid-cols-1  justify-items-center place-items-center max-sm:flex max-sm:flex-col gap-48 p-6">
       {/* music player card */}
-      <div className="bg-amber-200 min-w-[36rem] max-w-[36rem] max-sm:min-w-[clamp(29rem,1.5vw,33rem)] h-[46rem] p-3 flex flex-col justify-center items-center rounded-2xl mt-26
-      ">
+      <div
+        key={id}
+        className="bg-amber-200 min-w-[36rem] max-w-[56rem] max-sm:min-w-[clamp(29rem,1.5vw,30rem)] h-[46rem] p-3 flex flex-col justify-center items-center rounded-2xl mt-26 py-6
+"
+      >
         {/* player img block */}
-        <div className="w-[90%]  h-[50%] bg-orange-300 rounded-2xl">
-          <img src="" alt="Image" />
+        <div className="bg-amber-800   overflow-hidden  p-2 rounded-2xl shadow-md hover:shadow-xl transition-all duration-300">
+          <img
+            className="w-full h-full object-cover transition-transform duration-300 hover:scale-105 hover:shadow-xl"
+            src={cover_medium}
+            alt="Album cover"
+          />
         </div>
         {/* music player control block */}
         <div className="mt-7 w-[90%] ">
           {/* artist info */}
           <div className="text-amber-900">
-            <h2 className="font-extrabold text-[clamp(1.6rem,1.5vw,1.8rem)]">Song Title</h2>
-            <p className="">Artist Name</p>
+            <h2 className="font-extrabold text-[clamp(1.6rem,1.5vw,1.8rem)]">
+              {title_short}
+            </h2>
+            <p className="">{name}</p>
           </div>
           {/* music playing line */}
-          <div className=" ">
-            <progress className="h-3 w-full  "></progress>
+          <div className="mt-3">
+            <progress
+              value={progress}
+              max="100"
+              className=" h-3 w-full rounded-lg"
+            ></progress>
           </div>
+
           {/* controls */}
           <div className="flex justify-around items-center">
             {/* shuffle button */}
@@ -62,36 +234,44 @@ function MusicPlayer() {
 
             {/* play/pause button */}
             <div className="">
-              <button className="cursor-pointer">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  height="32"
-                  width="32"
-                  className="w-16 h-16 sm:w-[4rem]"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    fill="#7B3306"
-                    d="M12 23c6.075 0 11-4.925 11-11S18.075 1 12 1S1 5.925 1 12s4.925 11 11 11M8 7h3v10H8zm5 0h3v10h-3z"
-                  />
-                </svg>
-
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 32 32"
-                  height="32"
-                  width="32"
-                  className="w-16 h-16 sm:w-[4rem]"
-                >
-                  <path
-                    fill="none"
-                    d="M11 23a1 1 0 0 1-1-1V10a1 1 0 0 1 1.447-.894l12 6a1 1 0 0 1 0 1.788l-12 6A1 1 0 0 1 11 23"
-                  />
-                  <path
-                    fill="#7B3306"
-                    d="M16 2a14 14 0 1 0 14 14A14 14 0 0 0 16 2m7.447 14.895l-12 6A1 1 0 0 1 10 22V10a1 1 0 0 1 1.447-.894l12 6a1 1 0 0 1 0 1.788"
-                  />
-                </svg>
+              <button
+                onClick={() => {
+                  playMusic(preview);
+                  setCurrentSong(preview);
+                }}
+                className="cursor-pointer"
+              >
+                {isPlaying && currentSong === song.preview ? (
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    height="32"
+                    width="32"
+                    className="w-16 h-16 sm:w-[4rem]"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      fill="#7B3306"
+                      d="M12 23c6.075 0 11-4.925 11-11S18.075 1 12 1S1 5.925 1 12s4.925 11 11 11M8 7h3v10H8zm5 0h3v10h-3z"
+                    />
+                  </svg>
+                ) : (
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 32 32"
+                    height="32"
+                    width="32"
+                    className="w-16 h-16 sm:w-[4rem]"
+                  >
+                    <path
+                      fill="none"
+                      d="M11 23a1 1 0 0 1-1-1V10a1 1 0 0 1 1.447-.894l12 6a1 1 0 0 1 0 1.788l-12 6A1 1 0 0 1 11 23"
+                    />
+                    <path
+                      fill="#7B3306"
+                      d="M16 2a14 14 0 1 0 14 14A14 14 0 0 0 16 2m7.447 14.895l-12 6A1 1 0 0 1 10 22V10a1 1 0 0 1 1.447-.894l12 6a1 1 0 0 1 0 1.788"
+                    />
+                  </svg>
+                )}
               </button>
             </div>
 
@@ -159,12 +339,61 @@ function MusicPlayer() {
       </div>
 
       {/* about and lyrics info block */}
-      <div className="bg-amber-900 flex flex-col items-center  justify-center w-full h-[45rem]  rounded-2xl  max-sm:min-w-[30rem] mt-28 max-sm:mt-[-5rem]  max-sm:h-[30rem] p-5"  >
-        <div className=" h-[18rem] w-[80%]  max-sm:w-[30rem] text-[clamp(1.7rem,1.5vw,2rem)]  bg-amber-200 rounded-xl text-amber-900">About Artist</div>
-        <div className=" h-[10rem]  mt-20 active:h-[30rem] w-[30rem] text-[clamp(1.7rem,1.5vw,2rem)] rounded-xl  border border-amber-200 ">
-        
+      <div className="bg-amber-900 flex flex-col items-center  justify-center w-full h-[45rem]  rounded-2xl  max-sm:min-w-[30rem] mt-28 max-sm:mt-[-5rem]  max-sm:h-[30rem] p-5">
+        {/* about artist section */}
+        <div className=" h-[18rem] w-[80%]  max-sm:w-[30rem] text-[clamp(1.7rem,1.5vw,2rem)]  bg-amber-200 rounded-xl text-amber-900">
+          <div>About Artist</div>
 
-          <p className="text-6xl text-amber-200">  Lyrics <br/>Coming Soon</p>
+          <div>
+            <h2>{name}</h2>
+            <p></p>
+          </div>
+
+          <div>{link ? <Link to={link}>Read about artist</Link> : link}</div>
+        </div>
+
+        {/* track list */}
+        <div className=" h-[18rem] w-[80%]  max-sm:w-[30rem] text-[clamp(1.7rem,1.5vw,2rem)]  bg-amber-100 rounded-xl text-amber-900 mt-10 overflow-x-clip overflow-y-auto">
+          <div>
+            {albumData?.tracks?.data?.length > 0 ? (
+              albumData.tracks.data.map((track) => (
+                <button onClick={() => setTrackId(track.id)}>
+                  <div
+                    key={track.id}
+                    className="w-[95%] h-[6rem]   flex justify-around  border-b-[0.1rem] rounded-[3rem]  shadow-2xl drop-shadow-2xl hover:shadow-2xl hover:drop-shadow-xl hover:shadow-amber-700 hover:scale-105 transition-all duration-200 ease-in-out  mb-4
+hover:bg-gradient-to-r from-[#fee685] via-[#fef3c6] to-[#fef3c6] "
+                  >
+                    {/* cards list thumbnail */}
+                    <div className="w-[4.4rem] h-full  flex items-center ml-7">
+                      <div className="bg-red-300 h-[90%] w-[clamp(4.4rem,1.5vw,6rem)]  rounded-[60%] flex justify-center items-center overflow-clip ">
+                        <img
+                          className=" h-full w-full"
+                          src={
+                            track.album.cover_small || track.album.cover_medium
+                          }
+                          alt="artist"
+                        />
+                      </div>
+                    </div>
+
+                    {/* cards list info */}
+                    <div className="w-[52rem] h-full pl-5 flex  justify-between ">
+                      <div className=" h-full flex flex-col justify-center overflow-ellipsis ">
+                        <h3 className="font-bold text-[clamp(1.5rem,2.5vw,1.4rem)] line-clamp-3">
+                          {track.title}
+                        </h3>
+                        <p className="text-[clamp(1.4rem,2.5vw,1.5rem)]">
+                          {track.artist.name}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </button>
+              ))
+            ) : (
+              <p className="text-center text-amber-700 p-4">No tracks found.</p>
+            )}
+          </div>
         </div>
       </div>
     </div>

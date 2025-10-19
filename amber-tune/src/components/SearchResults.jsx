@@ -1,20 +1,26 @@
-import { useApiStore } from "../store/GlobalApiStore";
-import { useRef, useState } from "react";
+import { useApiStore, useAudioStore } from "../store/GlobalApiStore";
+import { Link, useNavigate } from "react-router-dom";
 
 function SearchResults() {
+  const navigate = useNavigate();
+
   const storedMusicData = useApiStore((state) => state.musicData);
 
-  const [isPlaying, setIsPlaying] = useState(false);
+  const { isPlaying, setIsPlaying } = useApiStore();
 
   let firstSong = storedMusicData?.[0];
-  console.log(firstSong);
 
-  const audioRef = useRef(null);
-  const [currentSong, setCurrentSong] = useState(null);
+  // set current song
+  const { currentSong, setCurrentSong } = useApiStore();
+  const audio = useAudioStore((state) => state.audioRef);
 
+  const setSelectedSong = useApiStore((state) => state.setSelectedSong);
+
+  // logic to close search result dialog
   const setIsVisible = useApiStore((state) => state.setIsVisible);
-
   const isVisible = useApiStore((state) => state.isVisible);
+
+  // logic for the first music card
   if (!firstSong) return null;
 
   // updates the larger card on search results
@@ -26,38 +32,42 @@ function SearchResults() {
   } = firstSong;
 
   // logic for playing music
-  const playMusic = (preview) => {
-    // if no audio exist , create and play
-    if (!audioRef.current) {
-      audioRef.current = new Audio(preview);
-      audioRef.current.play();
+ const playMusic = (preview) => { 
+
+  // if a different song is clicked, stop the old one
+  if (audio.src !== preview) {
+    audio.pause();
+    audio.src = preview;  // set new audio source
+    audio.currentTime = 0;
+    audio.play();
+    setIsPlaying(true);
+  } else {
+    // toggle play/pause for the same song
+    if (audio.paused) {
+      audio.play();
       setIsPlaying(true);
     } else {
-      // if a different song is click, stop the old one
-      // and play the new one
-      if (audioRef.current.src !== preview) {
-        audioRef.current.pause();
-        audioRef.current = new Audio(preview);
-        audioRef.current.play();
-        audioRef.current.loop = true;
-        setIsPlaying(true);
-      } else {
-        // toggle play and pause
-        if (audioRef.current.paused) {
-          audioRef.current.play();
-          setIsPlaying(true);
-        } else {
-          audioRef.current.pause();
-          setIsPlaying(false);
-        }
-      }
-      audioRef.current.onended = () => setIsPlaying(false);
+      audio.pause();
+      setIsPlaying(false);
     }
-  };
+  }
 
+  audio.onended = () => setIsPlaying(false);
+};
   const handleCloseCard = () => {
     if (!isVisible) return null;
     setIsVisible(false);
+  };
+
+  const songToPlayer = (id) => {
+    setSelectedSong(id);
+
+    audio.pause();
+    audio.src = "";
+    audio.currentTime = 0;
+    setIsPlaying(false);
+
+    navigate("/player", { replace: true });
   };
 
   return (
@@ -227,19 +237,19 @@ function SearchResults() {
                               />
                             </div>
                           </div>
-
-                          {/* cards list info */}
-                          <div className="w-[52rem] h-full pl-5 flex  justify-between">
-                            <div className=" h-full flex flex-col justify-center ">
-                              <h3 className="font-bold text-[clamp(1.5rem,2.5vw,1.4rem)] line-clamp-3">
-                                {title_short}
-                              </h3>
-                              <p className="text-[clamp(1.4rem,2.5vw,1.5rem)]">
-                                {name}
-                              </p>
+                          <a onClick={() => songToPlayer(id)}>
+                            {/* cards list info */}
+                            <div className="w-[52rem] h-full pl-5 flex  justify-between">
+                              <div className=" h-full flex flex-col justify-center ">
+                                <h3 className="font-bold text-[clamp(1.5rem,2.5vw,1.4rem)] line-clamp-3">
+                                  {title_short}
+                                </h3>
+                                <p className="text-[clamp(1.4rem,2.5vw,1.5rem)]">
+                                  {name}
+                                </p>
+                              </div>
                             </div>
-                          </div>
-
+                          </a>
                           {/* cards list play btn */}
                           <div className="  w-[5rem] flex justify-center items-center mr-4">
                             <button
