@@ -1,9 +1,15 @@
-import {useRef} from "react";
+import { useRef } from "react";
 import SearchBar from "./SearchBar";
 import SearchResults from "./SearchResults";
-import { useApiStore } from "../store/GlobalApiStore";
+import { useApiStore, useAudioStore } from "../store/GlobalApiStore";
+import { useNavigate } from "react-router-dom";
 
 function HomeLibrary() {
+  const navigate = useNavigate();
+ 
+  const { selectedSong, setSelectedSong, setPlayerData, setIsPlaying, } = useApiStore();
+  const audio = useAudioStore((state) => state.audioRef);
+ 
   const scrollRef = useRef();
   const recentRef = useRef();
   const recomRef = useRef();
@@ -14,12 +20,48 @@ function HomeLibrary() {
   // Reusable scroll handler
   const handleScroll = (ref, direction) => {
     if (!ref.current) return;
-    const scrollValue = direction === "left"  || direction === "top"? -scrollAmount : scrollAmount;
+    const scrollValue =
+      direction === "left" || direction === "top"
+        ? -scrollAmount
+        : scrollAmount;
     ref.current.scrollBy({
       left: scrollValue,
       top: scrollValue,
-      behavior: "smooth" 
+      behavior: "smooth",
     });
+  };
+
+  // get local stored music
+  let storedMusicData = {};
+  try {
+    storedMusicData =
+      JSON.parse(localStorage.getItem("stored-music-data")) || {};
+  } catch {
+    storedMusicData = {};
+  }
+
+  // console.log("Stored Data",storedMusicData.state.musicData);
+
+  const recentSongsObj = storedMusicData.state.musicData.find((song) => (song.id)=== selectedSong);
+
+    console.log("Stored Data", recentSongsObj );
+
+  const recentSongs = storedMusicData?.state?.musicData || [];
+
+  //  const {id, title_short , album:{cover_medium },
+  //     artist: { name, link },
+  //     preview } = recentSongs
+
+  const songToPlayer = (id) => {
+    setSelectedSong(id);
+    audio.pause();
+    audio.src = "";
+audio.currentTime = 0;
+    setIsPlaying(false);  
+    // audio.play(); 
+    setPlayerData(recentSongsObj)
+    audio.load()
+    navigate("/player", { replace: true });
   };
 
   return (
@@ -39,7 +81,20 @@ function HomeLibrary() {
                 className=" absolute top-0 h-3 right-5 cursor-pointer opacity-50 hover:opacity-100 active:translate-y-[-0.7rem] shadow-[20rem] hover:scale-130 transition-all duration-200 ease-in-out "
                 onClick={() => handleScroll(scrollRef, "top")}
               >
-               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 15 15"><path fill="none" stroke="#fef3c6" stroke-linecap="square" d="m1 10l6.5-7l6.5 7" stroke-width="6"/></svg>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 15 15"
+                >
+                  <path
+                    fill="none"
+                    stroke="#fef3c6"
+                    stroke-linecap="square"
+                    d="m1 10l6.5-7l6.5 7"
+                    stroke-width="6"
+                  />
+                </svg>
               </button>
 
               {/* right scroll b */}
@@ -47,7 +102,20 @@ function HomeLibrary() {
                 className="absolute bottom-3 h-3 right-5 cursor-pointer opacity-50 hover:opacity-100 shadow-[20rem] shadow-amber-300 drop-shadow-2xl hover:scale-130 active:translate-y-[0.7rem] transition-all duration-200 ease-in-out "
                 onClick={() => handleScroll(scrollRef, "right")}
               >
-               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 15 15"><path fill="none" stroke="#fef3c6" stroke-linecap="square" d="m14 5l-6.5 7L1 5" stroke-width="6"/></svg>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 15 15"
+                >
+                  <path
+                    fill="none"
+                    stroke="#fef3c6"
+                    stroke-linecap="square"
+                    d="m14 5l-6.5 7L1 5"
+                    stroke-width="6"
+                  />
+                </svg>
               </button>
             </div>
 
@@ -84,9 +152,8 @@ function HomeLibrary() {
             {/* scroll buttons */}
 
             <div className="w-full bg-transparent h-[3rem] flex justify-around absolute top-20 z-10">
-              
               {/* left scroll button */}
-              <button  
+              <button
                 onClick={() => handleScroll(recentRef, "left")}
                 className="absolute left-3 h-3 cursor-pointer opacity-70 hover:opacity-100 active:translate-x-[-0.7rem] hover:scale-130 transition-all duration-200 ease-in-out"
               >
@@ -143,22 +210,35 @@ function HomeLibrary() {
               className=" flex gap-10 px-13 py-2 overflow-x-hidden    "
             >
               {/* genre cards */}
-              {Array.from({ length: 10 }).map((_, i) => (
-                <div
-                  key={i}
-                  className="bg-amber-100 flex-shrink-0 w-[clamp(20rem,1.5vw,20rem)] h-[clamp(22rem,1.5vw,23rem)] max-sm:h-[20rem] max-sm:w-[20rem] rounded-3xl flex flex-col items-center justify-around border shadow-md drop-shadow-md hover:shadow-2xl hover:shadow-amber-100 
-                  hover:drop-shadow-amber-700 hover:drop-shadow-2xl hover:scale-90 transition-all duration-200 ease-in-out hover:backdrop-blur-2xl"
-                >
-                  <div className="h-[60%] max-sm:h-[65%] w-[90%] flex items-center justify-center border rounded-xl">
-                    Image 🧡
+              {Array.isArray(recentSongs) &&
+                recentSongs.map((song) => (
+                  <div
+                    onClick={() => songToPlayer(song.id)}
+                    key={song.id}
+                    className="  flex-shrink-0 w-[clamp(20rem,1.5vw,20rem)] h-[clamp(22rem,1.5vw,23rem)] max-sm:h-[20rem] max-sm:w-[20rem]  flex flex-col items-center justify-around   shadow-md drop-shadow-md hover:shadow-2xl hover:shadow-amber-100 
+                  hover:drop-shadow-amber-700 hover:drop-shadow-2xl hover:scale-90 transition-all duration-200 ease-in-out hover:backdrop-blur-2xl text-[#333] hover:text-amber-200 "
+                  >
+                    <div className="h-[60%] max-sm:h-[65%] w-[90%] flex items-center justify-center     bg-amber-800   overflow-hidden  p-2  shadow-md hover:shadow-xl transition-all duration-300 ">
+                      <img
+                        className="w-full h-full object-cover transition-transform duration-300 hover:scale-105 hover:shadow-xl"
+                        src={song.album.cover_medium}
+                        alt=""
+                      />
+                    </div>
+                    {/* recent info  */}
+                    <div
+                      className="h-[30%] w-[100%] flex flex-col pl-3 justify-center transition-all duration-200 ease-in-out  overflow-y-hidden
+                      "
+                    >
+                      <h1 className=" text-amber-200 text-[clamp(1.5rem,2.5vw,1.5rem)] font-bold w-full overflow-x-hidden">
+                        {song.title_short}
+                      </h1>
+                      <p className="text-[clamp(1.5rem,2.5vw,1.5rem)] font-[600]">
+                        {song.artist.name}
+                      </p>
+                    </div>
                   </div>
-                  {/* recent info  */}
-                  <div className="h-[25%] w-[90%] flex flex-col pl-3 justify-center  border ">
-                    <h1 className="text-amber-900   ">Song Title {i + 1}</h1>
-                    <p>Artist Name {i + 1}</p>
-                  </div>
-                </div>
-              ))}
+                ))}
             </div>
           </div>
         </div>
@@ -251,5 +331,5 @@ function HomeLibrary() {
     </>
   );
 }
-
+// 🧡
 export default HomeLibrary;

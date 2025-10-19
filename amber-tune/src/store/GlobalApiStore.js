@@ -24,6 +24,7 @@ export const useApiStore = create(persist(
 
 
 
+
     // actions
     setMusicData: (data) => set({ musicData: data }),
     // search results close button logic
