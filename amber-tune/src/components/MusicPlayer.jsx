@@ -5,6 +5,7 @@ import { fetchAlbumData } from "../services/AlbumSearchService";
 import { useQuery } from "@tanstack/react-query";
 import { useRef, useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
+import AmberTuneState from "./AmberTuneState";
 
 function MusicPlayer() {
   const [progress, setProgress] = useState(0);
@@ -14,11 +15,12 @@ function MusicPlayer() {
   const setIsPlaying = useApiStore((state) => state.setIsPlaying);
   const trackId = useApiStore((state) => state.trackId);
   const setTrackId = useApiStore((state) => state.setTrackId);
+  const playerData = useApiStore((state) => state.playerData);
 
  
   const audio = useAudioStore((state) => state.audioRef);
 
-  const { playerData, setPlayerData ,currentSong, setCurrentSong } = useApiStore();
+  const { setPlayerData ,currentSong, setCurrentSong } = useApiStore();
 
   const location = useLocation();
 
@@ -77,6 +79,8 @@ function MusicPlayer() {
       ? musicData.find((music) => music.id === selectedSong)
       : null;
 
+
+      
   // const trackSong =
   //   musicData?.length > 0
   //     ? musicData.find((music) => music.id === song.id)
@@ -102,7 +106,12 @@ function MusicPlayer() {
     (trackSong) => trackSong.id === trackId
   );
 
-
+  useEffect(() => {
+  if (song) {
+    setPlayerData(song);
+    audio.load()
+  }
+}, [song, setPlayerData]);
 
   // setPlayerData(userTrack)
   console.log("userTrack", userTrack);
@@ -126,6 +135,7 @@ function MusicPlayer() {
       setIsPlaying(true);
       setProgress(0);
     }
+    
 
     // update progress continuously
     const updateProgress = () => {
@@ -149,8 +159,9 @@ function MusicPlayer() {
     };
   }, [song]);
 
-  if (!song) return null;
-  
+  if (!song) return null; 
+
+
 
   let {
     id,
@@ -159,10 +170,14 @@ function MusicPlayer() {
     album: { cover_medium },
     artist: { name },
     preview,
-  } = playerData || {};
+  } = playerData;
+  if(playerData) 
 
-  if (isLoading) return <p>Loading...</p>;
-  if (isError) return <p>Something went wrong: {error.message}</p>;
+    
+   // handle loading and error states
+  if (isLoading) return <AmberTuneState isLoading={true} />;
+  if (isError) return <AmberTuneState isError={true} error={error?.message} />;
+
 
   console.log("songData", song);
   console.log("userTrack", userTrack);
@@ -173,6 +188,7 @@ const sendUserSelectedTrack = (track) => {
   setPlayerData(track);         // update playerData in store
   setIsPlaying(true);           // mark as playing
   audio.src = track.preview;    // set new audio source
+                 // play new track
   audio.currentTime = 0;
   audio.play();                 // play new track
 };
@@ -371,7 +387,7 @@ const sendUserSelectedTrack = (track) => {
           <div className="  w-[50%] flex flex-col justify-center items-center hover:text-[2.3rem] transition duration-200 ease-in-out">
             <h2 className="text-[clamp(2.rem,1.5vw,3rem)]">{name}</h2>
             <p>
-               {link? <Link to={link}>Read about artist</Link> : link}
+               {link? <Link to={link} target="_blank">Read about artist</Link> : link}
             </p>
           </div>
                 {/* Artist Photo */}

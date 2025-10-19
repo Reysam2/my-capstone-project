@@ -33,17 +33,17 @@ function HomeLibrary() {
   };
 
   // get local stored music
-  let storedMusicData = {};
+  let storedMusicData = JSON.parse(localStorage.getItem("stored-music-data")) || {};
   try {
     storedMusicData =
-      JSON.parse(localStorage.getItem("stored-music-data")) || {};
+      JSON.parse(localStorage.getItem("stored-music-data")) || {}
   } catch {
     storedMusicData = {};
   }
 
   // console.log("Stored Data",storedMusicData.state.musicData);
   // Get the selected song from local storage
-  const recentSongsObj = storedMusicData.state.musicData.find(
+  const recentSongsObj = storedMusicData?.state?.musicData.find(
     (song) => song.id === selectedSong
   );
 

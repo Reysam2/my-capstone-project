@@ -55,6 +55,19 @@ export const useApiStore = create(persist(
         },
       }),
 
+      resetPlayerData: (data) =>
+      set({
+        playerData: {
+          id: data,
+          link: data,
+          title_short: data,
+          album: { cover_medium: data},
+          artist: {
+            name: data
+          },
+          preview: data,
+        },
+      }),
 
 
 
