@@ -23,7 +23,6 @@ export const fetchAlbumData = async (id) => {
      
     return res.data
 
-
   } catch (error) {
    throw new Error(error.response?.data?.message || error.message || "Failed to fetch album data");
 
