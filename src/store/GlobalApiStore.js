@@ -12,6 +12,7 @@ export const useApiStore = create(persist(
     isPlaying: false,
     trackId: 0,
     currentSong: null,
+    progress: 0,
 
     playerData: {
       id: 0,
@@ -37,7 +38,7 @@ export const useApiStore = create(persist(
     setTrackId: (id) => set({ trackId: id }),
 
     setCurrentSong: (song) => set({ currentSong: song }),
-
+    setProgress: (status) => set({ progress: status }),
 
     // set playerData
 
@@ -55,13 +56,13 @@ export const useApiStore = create(persist(
         },
       }),
 
-      resetPlayerData: (data) =>
+    resetPlayerData: (data) =>
       set({
         playerData: {
           id: data,
           link: data,
           title_short: data,
-          album: { cover_medium: data},
+          album: { cover_medium: data },
           artist: {
             name: data
           },
