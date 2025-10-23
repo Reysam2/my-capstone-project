@@ -4,16 +4,16 @@ function AmberTuneState({ isLoading, isError, error }) {
   let content;
 
   if (isLoading) {
-    content = <h1 className="text-amber-200 text-6xl">We are working on your music...</h1>;
+    content = <h1 className="text-amber-200 text-6xl text-[clamp(2rem,2.5vw,3rem)]">We are working on your music...</h1>;
   } else if (isError) {
     content = (
-      <h1 className="text-amber-200 text-6xl">
+      <h1 className="text-amber-200 text-6xl text-center  text-[clamp(2rem,2.5vw,3rem)]">
         Something went wrong. <br /> {error && <span>{error}</span>}
       </h1>
     );
   } else {
     content = <div className="text-center">
-       <h1 className="text-center text-amber-200 text-6xl mb-5">Everything is good at you end. 🎵</h1>;
+       <h1 className="text-center text-amber-200 text-6xl mb-5 text-[clamp(2rem,2.5vw,3rem)]">Everything is good at you end. 🎵</h1>;
     <p className="text-center text-amber-200 text-6xl mb-12 ">  This is on us.</p>
 
     <Link to="/" className="text-center text-amber-200 text-4xl mb-5  "><p className="animate-bounce">Back To Home</p></Link>
