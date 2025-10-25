@@ -78,14 +78,14 @@ const playMusic = (preview) => {
         storedMusicData.length > 0 && (
           <div
             id="search_card"
-            className="   flex  justify-center fixed inset-[-6rem] items-center overflow-y-auto bg-amber-70 backdrop-blur-md z-50  border-red-400"
+            className="   flex  justify-center fixed inset-[-6rem] items-center overflow-y-auto bg-amber-70 backdrop-blur-md z-10  border-red-400"
           >
             <div className=" bg-gradient-to-br from-amber-100 via-amber-200 to-amber-100   border-amber-50 h-[45rem] mt-10 rounded-xl text-amber-900 flex flex-col w-[29.5rem] sm:w-[67rem] relative max-sm:items-center pt-6 shadow-xl drop-shadow-xl overflow-y-scroll overflow-x-clip transition-all duration-200 ease-in-out ">
               <div className="w-[100%] flex justify-end items-center h-[5rem]">
                 <button
                   id="searchCardBtn"
                   onClick={handleCloseCard}
-                  className="cursor-pointer fixed z-10 top-[-0.6rem] right-[-0.6rem] "
+                  className="cursor-pointer fixed z-100 top-[-0.6rem] right-[-0.6rem] "
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"

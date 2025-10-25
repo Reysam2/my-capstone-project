@@ -44,11 +44,11 @@ function SearchBar() {
 
 
   return (
-    <div className="w-[100%] flex justify-center flex-col items-center">
-      <div className="w-[clamp(34rem,0.5vw,35rem)] h-[5rem] flex items-center justify-center  ">
-        <form onSubmit={handleSearch} className="w-full min-w-[2rem] mt-5">
+    <div className="w-[100%] flex justify-center flex-col items-center ">
+      <div className=" w-full  h-[5rem] flex items-center mt-5 justify-center">
+        <form onSubmit={handleSearch} className="   max-w-[35rem]  flex justify-center">
           {/* form field */}
-          <div className=" flex items-center justify-center min-w-[2rem] relative">
+          <div className=" flex items-center justify-center   relative  ">
             {/* search icon */}
             <div className="absolute left-[1.1rem] top-[0.7rem] cursor-pointer">
               <svg
@@ -73,12 +73,12 @@ function SearchBar() {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="What do you want to play?"
-              className="px-[5%] pl-[4rem]  border border-r-0  w-full min-w-[5rem] h-[3.8rem]   outline-none bg-amber-100 rounded-3xl rounded-r-none placeholder-amber-900 text-[clamp(1.2rem,1.5vw,1.6rem)]"
+              className=" px-[4.6%] pl-[4.8rem] text-amber-900  h-[3.8rem]    outline-none max-sm:min-w-[20rem]  max-sm:pl-[3.7rem] bg-amber-100 rounded-3xl rounded-r-none placeholder-amber-900 text-[clamp(1.2rem,2.5vw,1.5rem)]"
             />
 
             {/* search button */}
             <button
-              className="border border-amber-900 border-l-0 h-[3.8rem] px-[1.6rem] rounded-3xl rounded-l-none cursor-pointer bg-amber-200  text-amber-900"
+              className="    h-[3.8rem] px-[1.6rem] text-[clamp(1.3rem,2.5vw,1.6rem)] rounded-3xl rounded-l-none cursor-pointer bg-amber-200  text-amber-900"
               type="submit"
             >
               Search
