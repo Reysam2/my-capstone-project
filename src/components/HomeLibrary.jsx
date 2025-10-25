@@ -2,7 +2,7 @@ import { useRef, useState, useEffect } from "react";
 import SearchBar from "./SearchBar";
 import SearchResults from "./SearchResults";
 import { useApiStore, useAudioStore } from "../store/GlobalApiStore";
-import { useNavigate } from "react-router-dom"; 
+import { useNavigate } from "react-router-dom";
 
 function HomeLibrary() {
   const navigate = useNavigate();
@@ -33,10 +33,11 @@ function HomeLibrary() {
   };
 
   // get local stored music
-  let storedMusicData = JSON.parse(localStorage.getItem("stored-music-data")) || {};
+  let storedMusicData =
+    JSON.parse(localStorage.getItem("stored-music-data")) || {};
   try {
     storedMusicData =
-      JSON.parse(localStorage.getItem("stored-music-data")) || {}
+      JSON.parse(localStorage.getItem("stored-music-data")) || {};
   } catch {
     storedMusicData = {};
   }
@@ -64,7 +65,7 @@ function HomeLibrary() {
     setIsPlaying(false);
     setPlayerData(recentSongsObj);
     navigate("/player", { replace: true });
-    audio.load(); 
+    audio.load();
   };
 
   //recommendations base on user searched history
@@ -72,13 +73,12 @@ function HomeLibrary() {
 
   function getRandomSongs(arr, count) {
     // shuffle array
-    const shuffled = [...arr].sort(() => 0.5 - Math.random()); 
-  // take first `count` elements
-  return shuffled.slice(0, count); 
-}
+    const shuffled = [...arr].sort(() => 0.5 - Math.random());
+    // take first `count` elements
+    return shuffled.slice(0, count);
+  }
 
-const [randomSongs, setRandomSongs] = useState([]) 
-
+  const [randomSongs, setRandomSongs] = useState([]);
 
   useEffect(() => {
     // do an initial shuffle
@@ -87,22 +87,18 @@ const [randomSongs, setRandomSongs] = useState([])
     // start reshuffling every 10 seconds
     const interval = setInterval(() => {
       const recommendedMusic = getRandomSongs(recentSongs, 10);
-      setRandomSongs(recommendedMusic); 
+      setRandomSongs(recommendedMusic);
     }, 10000);
 
     // clean up interval when component unmounts
     return () => clearInterval(interval);
   }, []); // rerun if recentSongs changes
 
-
-
-
-
-return(
+  return (
     <>
-      <SearchBar />
-      <SearchResults />
-      <div className="  h-full w-full mt-15 overflow-y-auto  ">
+      <div className="  h-full w-full mt-15 overflow-y-auto  relative">
+        <SearchBar />
+        <SearchResults />
         {/* genres container */}
 
         <div className=" w-[100%] h-[25rem] flex flex-col mt-10 p-4  rounded-xl relative">
@@ -244,7 +240,8 @@ return(
               className=" flex gap-10 px-13 py-2 overflow-x-hidden    "
             >
               {/* genre cards */}
-              {Array.isArray(recentSongs) &&  recentSongs.length > 2 && 
+              {Array.isArray(recentSongs) &&
+                recentSongs.length > 2 &&
                 recentSongs.map((song) => (
                   <div
                     onClick={() => songToPlayer(song.id)}
@@ -345,7 +342,8 @@ hover:drop-shadow-amber-700 hover:drop-shadow-2xl hover:scale-90 transition-all 
               {Array.isArray(randomSongs) &&
                 randomSongs.map((song) => (
                   <div
-                    onClick={() => {songToPlayer(song.id); 
+                    onClick={() => {
+                      songToPlayer(song.id);
                     }}
                     key={song.id}
                     className="  flex-shrink-0 w-[clamp(20rem,1.5vw,20rem)] h-[clamp(22rem,1.5vw,23rem)] max-sm:h-[20rem] max-sm:w-[20rem]  flex flex-col items-center justify-around   shadow-md drop-shadow-md hover:shadow-2xl hover:shadow-amber-100 
