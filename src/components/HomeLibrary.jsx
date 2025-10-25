@@ -102,14 +102,14 @@ return(
     <>
       <SearchBar />
       <SearchResults />
-      <div className="  h-screen w-full mt-15 overflow-y-auto  ">
+      <div className="h-screen w-full mt-15 overflow-y-auto">
         {/* genres container */}
 
-        <div className=" w-[100%] h-[25rem] flex flex-col mt-10 p-4  rounded-xl relative">
+        <div className="   h-[25rem] flex flex-col mt-10 p-4 items-center  rounded-xl relative">
           <div className="  w-full h-[20rem] flex flex-col justify-around relative ">
             {/* scroll buttons */}
 
-            <div className="w-[5rem]  max-sm:right-[1rem]    h-[12rem] flex flex-col  items-end absolute right-25 z-10  snap-y-mandatory">
+            <div className="w-[5rem] max-sm:right-[1rem] h-[12rem] flex flex-col  items-end absolute right-25 z-10  snap-y-mandatory">
               {/* left scroll button */}
               <button
                 className=" absolute top-0 h-3 right-5 cursor-pointer opacity-50 hover:opacity-100 active:translate-y-[-0.7rem] shadow-[20rem] hover:scale-130 transition-all duration-200 ease-in-out "
@@ -154,8 +154,8 @@ return(
             </div>
 
             {/* genres heading */}
-            <div className="">
-              <div className="ml-[17rem] mb-5">
+            <div className="w-[80%] self-center flex justify-start">
+              <div className=" ml-13 mb-5">
                 <p className="font-extrabold text-amber-200 text-[clamp(2rem,2.5vw,3rem)]">
                   Genres
                 </p>
@@ -181,11 +181,11 @@ return(
         </div>
 
         {/* Recently played container */}
-        <div className=" w-[100%] h-[40rem] flex flex-col justify-around mt-20 p-4 rounded-xl relative ">
-          <div className="  w-full h-[30rem] flex flex-col justify-between  relative  mt-4 ">
+        <div className=" w-[100%] h-[70rem]  flex flex-col justify-around mt-20 p-4 rounded-xl relative ">
+          <div className="  w-full h-[50rem] flex flex-col justify-between items-center relative ">
             {/* scroll buttons */}
 
-            <div className="w-full bg-transparent h-[3rem] flex justify-around absolute top-20 z-10">
+            <div className="w-full bg-transparent h-[3rem] flex justify-around ite absolute top-20 z-10">
               {/* left scroll button */}
               <button
                 onClick={() => handleScroll(recentRef, "left")}
@@ -231,9 +231,9 @@ return(
             </div>
 
             {/* genres heading */}
-            <div className="">
+            <div className="w-[80%] mb-8">
               <div className="ml-14 ">
-                <p className="font-extrabold text-amber-200 text-[clamp(2rem,2.5vw,3rem)]">
+                <p className="font-extrabold text-amber-200 text-[clamp(2rem,2.5vw,3rem)] ">
                   Recently Played
                 </p>
               </div>
@@ -241,7 +241,8 @@ return(
             {/* recently played list */}
             <div
               ref={recentRef}
-              className=" flex gap-10 px-13 py-2 overflow-x-hidden    "
+              className=" w-[80%] h-[60rem] grid 
+              sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4  gap-20 px-13 py-2 overflow-x-hidden  scroll-smooth   "
             >
               {/* genre cards */}
               {Array.isArray(recentSongs) &&  recentSongs.length > 2 && 
@@ -250,7 +251,7 @@ return(
                     onClick={() => songToPlayer(song.id)}
                     key={song.id}
                     className="  flex-shrink-0 w-[clamp(20rem,1.5vw,20rem)] h-[clamp(22rem,1.5vw,23rem)] max-sm:h-[20rem] max-sm:w-[20rem]  flex flex-col items-center justify-around   shadow-md drop-shadow-md hover:shadow-2xl hover:shadow-amber-100 
-hover:drop-shadow-amber-700 hover:drop-shadow-2xl hover:scale-90 transition-all duration-200 ease-in-out hover:backdrop-blur-2xl text-[#333] hover:text-amber-200 "
+hover:drop-shadow-amber-700 hover:drop-shadow-2xl hover:scale-90 transition-all duration-200 ease-in-out hover:backdrop-blur-2xl text-amber-200"
                   >
                     <div className="h-[60%] max-sm:h-[65%] w-[90%] flex items-center justify-center     bg-amber-800   overflow-hidden  p-2  shadow-md hover:shadow-xl transition-all duration-300 ">
                       <img
@@ -332,7 +333,7 @@ hover:drop-shadow-amber-700 hover:drop-shadow-2xl hover:scale-90 transition-all 
             <div className="">
               <div className="ml-14 ">
                 <p className="font-extrabold text-amber-200 text-[clamp(2rem,2.5vw,3rem)]">
-                  Recommended Songs
+                  Recommended for You
                 </p>
               </div>
             </div>

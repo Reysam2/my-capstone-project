@@ -86,7 +86,7 @@ function SearchBar() {
           </div>
         </form>
       </div>
-      <div
+      {/* <div
         className="text-amber-200    right-50  flex flex-col
       transition-all animate-pulse duration-200 ease-in-out justify-center items-center mt-5 p"
       >
@@ -100,7 +100,7 @@ function SearchBar() {
         <h2 className="text-[clamp(1.8rem,2.5vw,2.5rem)]">
           Search to see the Magic.
         </h2>
-      </div>
+      </div> */}
     </div>
   );
 }
