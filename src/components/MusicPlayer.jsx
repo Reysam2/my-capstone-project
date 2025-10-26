@@ -3,7 +3,7 @@ import { useAudioStore } from "../store/GlobalApiStore";
 import { Link } from "react-router-dom";
 import { fetchAlbumData } from "../services/AlbumSearchService";
 import { useQuery } from "@tanstack/react-query";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import AmberTuneState from "./AmberTuneState";
 
 function MusicPlayer() {
@@ -15,13 +15,16 @@ function MusicPlayer() {
     isPlaying,
     setIsPlaying,
     // trackId,
-    setTrackId,
+    // setTrackId,
     playerData,
+    setPlayerData,
+    currentSong,
+    setCurrentSong,
   } = useApiStore();
 
   const audio = useAudioStore((state) => state.audioRef);
 
-  const { setPlayerData, currentSong, setCurrentSong } = useApiStore();
+  const [currentIndex, setCurrentIndex] = useState(0);
 
   // logic for playing music
   const playMusic = (preview) => {
@@ -81,15 +84,17 @@ function MusicPlayer() {
 
   useEffect(() => {
     if (song) {
-      setPlayerData(song);
-      audio.load();
-      audio.play();
-      audio.loop = true;
+      if (playerData?.id != song.id) {
+        setPlayerData(song);
+        audio.load();
+        audio.play();
+        // audio.loop = true;
+      }
     } else {
       // Optionally pause or reset audio
       audio.pause();
     }
-  }, [song, setPlayerData, audio]);
+  }, [song]);
 
   // setPlayerData(userTrack)
 
@@ -149,46 +154,54 @@ function MusicPlayer() {
     // play new track
     audio.currentTime = 0;
     audio.play(); // play new track
-    audio.loop = true;
+    // audio.loop = true;
   };
 
-//  array of music data objects
-  const trackListId = albumData?.tracks?.data.map((obj) => obj.id);
+  // logic for playing next song
 
-  // array of music object ids
-  const trackList = albumData?.tracks?.data.map((track) => {
-    // setPlayerData(track)
-  })
+  const arrayOfSongObjects = albumData?.tracks?.data;
+  console.log("array", arrayOfSongObjects);
 
-  console.log("trackList",trackList, "ID:", trackListId);
-  // logic to play next song
+  const handleNext = () => {
+     if (!arrayOfSongObjects?.length || !audio) return; 
+    setCurrentIndex((prevIndex) => {
+      const newIndex =
+        prevIndex + 1 < arrayOfSongObjects?.length ? prevIndex + 1 : 0;
 
-
-  const playNextSong = () => {
-
- trackList?.map((track) => {
-    if(audio.src !== track.preview) {
-       
-      
-      setPlayerData(track)
-      audio.pause() 
-      audio.src === track.preview;
-      audio.load()
+      const track = arrayOfSongObjects[newIndex];
+        if (!track || !audio) return prevIndex;
+      setPlayerData(track);
+      setIsPlaying(true); // mark as playing
+      setCurrentSong(track.preview);
+      audio.src = track?.preview; // set new audio source
+      // play new track
       audio.currentTime = 0;
-      audio.play()
-      setIsPlaying(true)
-    }
-    // else {
-    //   const newTrack = trackList.id + 1;
-    //  audio.pause()
-    //   audio.src === newTrack.preview 
-    //   audio.load()
-    //   audio.currentTime = 0;
-    //   audio.play()
-    //   setIsPlaying(true)
-    // }
-    
-  }); 
+      audio.play(); // play new track
+      // audio.loop = true;
+      audio.onended = ()=> setIsPlaying(false)
+      return newIndex;
+    });
+  };
+
+  const handleBack = () => {
+     if (!arrayOfSongObjects?.length || !audio) return; 
+    setCurrentIndex((prevIndex) => {
+      const newIndex =
+        prevIndex - 1 >= 0 ? prevIndex - 1 : arrayOfSongObjects?.length - 1;
+
+       const track = arrayOfSongObjects[newIndex];
+         if (!track || !audio) return prevIndex;
+        audio.src = track?.preview; // set new audio source
+        setPlayerData(track)
+        audio.currentTime = 0;
+   
+      setIsPlaying(true); // mark as playing
+          setCurrentSong(track.preview);
+      audio.play(); // play new track
+      // audio.loop = true;
+          audio.onended = ()=> setIsPlaying(false)
+      return newIndex
+    });
   };
 
   if (isLoading) return <AmberTuneState isLoading={true} />;
@@ -253,7 +266,7 @@ function MusicPlayer() {
 
             {/* previous button */}
             <div>
-              <button className="cursor-pointer">
+              <button onClick={handleBack} className="cursor-pointer">
                 <svg
                   width="24"
                   height="29"
@@ -313,7 +326,7 @@ function MusicPlayer() {
 
             {/* next button */}
             <div>
-              <button onClick={playNextSong} className="cursor-pointer">
+              <button onClick={handleNext} className="cursor-pointer">
                 <svg
                   width="25"
                   height="29"
@@ -410,13 +423,13 @@ function MusicPlayer() {
             {albumData?.tracks?.data?.length > 0 ? (
               albumData.tracks.data.map((track) => (
                 <button
+                  key={track.id}
                   onClick={() => {
-                    setTrackId(track.id);
+                    // setTrackId(track.id);
                     sendUserSelectedTrack(track);
                   }}
                 >
                   <div
-                    key={track.id}
                     className="w-[95%] min-h-[6rem]   flex justify-around items-center border-b-[0.1rem] rounded-[3rem]  shadow-2xl drop-shadow-2xl hover:shadow-2xl hover:drop-shadow-xl hover:shadow-amber-700 hover:scale-105 transition-all duration-200 ease-in-out  mb-4
 hover:bg-gradient-to-r from-[#fee685] via-[#fef3c6] to-[#fef3c6] "
                   >
