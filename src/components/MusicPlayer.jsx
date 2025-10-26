@@ -16,13 +16,14 @@ function MusicPlayer() {
     setIsPlaying,
     // trackId,
     // setTrackId,
+  
     playerData,
     setPlayerData,
     currentSong,
     setCurrentSong,
   } = useApiStore();
 
-  const audio = useAudioStore((state) => state.audioRef);
+ const { audioRef: audio, audioLoop, toggleAudioLoop } = useAudioStore();
 
   const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -204,6 +205,13 @@ function MusicPlayer() {
     });
   };
 
+// Music loop logic
+ const handleLoop = () => {
+  toggleAudioLoop();
+  console.log("Loop active:", audio.loop);
+};
+
+
   if (isLoading) return <AmberTuneState isLoading={true} />;
   if (isError) return <AmberTuneState isError={true} error={error?.message} />;
 
@@ -233,7 +241,7 @@ function MusicPlayer() {
             <p className="">{name}</p>
           </div>
           {/* music playing line */}
-          <div className="mt-3">
+          <div className="mt-2 mb-2.5">
             <progress
               value={progress}
               max="100"
@@ -344,8 +352,9 @@ function MusicPlayer() {
 
             {/* loop/repeat button  */}
             <div>
-              <button className="cursor-pointer">
-                <svg
+              <button onClick={handleLoop} className="cursor-pointer">
+               { audioLoop && currentIndex ? 
+                 (<svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="-2 -3 24 24"><rect x="-2" y="-3" width="36" height="36" fill="none"/><path fill="#7B3306" d="m11.774 15l1.176 1.176a1 1 0 0 1-1.414 1.414l-2.829-2.828a1 1 0 0 1 0-1.414l2.829-2.829a1 1 0 0 1 1.414 1.415L11.883 13H14a4 4 0 1 0 0-8a1 1 0 0 1 0-2a6 6 0 1 1 0 12zM8.273 3L7.176 1.904A1 1 0 0 1 8.591.489l2.828 2.829a1 1 0 0 1 0 1.414L8.591 7.56a1 1 0 0 1-1.415-1.414L8.323 5H6a4 4 0 1 0 0 8a1 1 0 0 1 0 2A6 6 0 1 1 6 3z"/></svg>):( <svg
                   width="36"
                   height="31"
                   viewBox="0 0 36 31"
@@ -380,7 +389,9 @@ function MusicPlayer() {
                     stroke-linecap="round"
                     stroke-linejoin="round"
                   />
-                </svg>
+                </svg>) 
+               
+               }
               </button>
             </div>
           </div>
