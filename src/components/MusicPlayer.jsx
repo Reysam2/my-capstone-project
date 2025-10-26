@@ -3,11 +3,10 @@ import { useAudioStore } from "../store/GlobalApiStore";
 import { Link } from "react-router-dom";
 import { fetchAlbumData } from "../services/AlbumSearchService";
 import { useQuery } from "@tanstack/react-query";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import AmberTuneState from "./AmberTuneState";
 
-function MusicPlayer() { 
-
+function MusicPlayer() {
   const {
     progress,
     setProgress,
@@ -16,13 +15,16 @@ function MusicPlayer() {
     isPlaying,
     setIsPlaying,
     // trackId,
-    setTrackId,
+    // setTrackId,
     playerData,
+    setPlayerData,
+    currentSong,
+    setCurrentSong,
   } = useApiStore();
 
   const audio = useAudioStore((state) => state.audioRef);
 
-  const { setPlayerData, currentSong, setCurrentSong } = useApiStore();
+  const [currentIndex, setCurrentIndex] = useState(0);
 
   // logic for playing music
   const playMusic = (preview) => {
@@ -61,7 +63,7 @@ function MusicPlayer() {
     // Render fallback UI if no song
     return <AmberTuneState isError={true} error="No music available" />;
   }
- 
+
   const albumId = song?.album?.id;
 
   const {
@@ -80,21 +82,22 @@ function MusicPlayer() {
   //   (trackSong) => trackSong.id === trackId
   // );
 
-
   useEffect(() => {
     if (song) {
-      setPlayerData(song);
-      audio.load();
-      audio.play();
-         audio.loop = true;
+      if (playerData?.id != song.id) {
+        setPlayerData(song);
+        audio.load();
+        audio.play();
+        // audio.loop = true;
+      }
     } else {
       // Optionally pause or reset audio
       audio.pause();
     }
-  }, [song, setPlayerData, audio]);
+  }, [song]);
 
   // setPlayerData(userTrack)
- 
+
   // music progress bar logic
   //  Handle progress tracking and song switching
   useEffect(() => {
@@ -136,7 +139,6 @@ function MusicPlayer() {
       audio.removeEventListener("ended", handleEnded);
     };
   }, [song]);
- 
 
   const id = playerData?.id;
   const link = playerData?.link;
@@ -152,16 +154,65 @@ function MusicPlayer() {
     // play new track
     audio.currentTime = 0;
     audio.play(); // play new track
-    audio.loop = true;
+    // audio.loop = true;
+  };
+
+  // logic for playing next song
+
+  const arrayOfSongObjects = albumData?.tracks?.data;
+  console.log("array", arrayOfSongObjects);
+
+  const handleNext = () => {
+     if (!arrayOfSongObjects?.length || !audio) return; 
+    setCurrentIndex((prevIndex) => {
+      const newIndex =
+        prevIndex + 1 < arrayOfSongObjects?.length ? prevIndex + 1 : 0;
+
+      const track = arrayOfSongObjects[newIndex];
+        if (!track || !audio) return prevIndex;
+      setPlayerData(track);
+      setIsPlaying(true); // mark as playing
+      setCurrentSong(track.preview);
+      audio.src = track?.preview; // set new audio source
+      // play new track
+      audio.currentTime = 0;
+      audio.play(); // play new track
+      // audio.loop = true;
+      audio.onended = ()=> setIsPlaying(false)
+      return newIndex;
+    });
+  };
+
+  const handleBack = () => {
+     if (!arrayOfSongObjects?.length || !audio) return; 
+    setCurrentIndex((prevIndex) => {
+      const newIndex =
+        prevIndex - 1 >= 0 ? prevIndex - 1 : arrayOfSongObjects?.length - 1;
+
+       const track = arrayOfSongObjects[newIndex];
+         if (!track || !audio) return prevIndex;
+        audio.src = track?.preview; // set new audio source
+        setPlayerData(track)
+        audio.currentTime = 0;
+   
+      setIsPlaying(true); // mark as playing
+          setCurrentSong(track.preview);
+      audio.play(); // play new track
+      // audio.loop = true;
+          audio.onended = ()=> setIsPlaying(false)
+      return newIndex
+    });
   };
 
   if (isLoading) return <AmberTuneState isLoading={true} />;
   if (isError) return <AmberTuneState isError={true} error={error?.message} />;
 
   return (
-    <div className="h-[100%] flex flex-col items-center gap-y-40 sm:flex-row sm:justify-center  sm:items-center">
+    <div className="h-[100%] flex flex-col items-center gap-y-40 sm:flex-row sm:justify-center  sm:items-center scrollbar-none">
       {/* music player card */}
-      <div key={id} className="bg-amber-200 min-w-[36rem] max-w-[56rem] max-sm:min-w-[clamp(29rem,1.5vw,30rem)] h-[46rem] p-3 flex flex-col justify-center items-center rounded-2xl mt-26 sm:rounded-r-none py-6
+      <div
+        key={id}
+        className="bg-amber-200 min-w-[30rem] sm:min-w-[36rem] max-w-[36rem]  h-[46rem] p-3 flex flex-col justify-center items-center rounded-2xl mt-26 sm:rounded-r-none py-6
 "
       >
         {/* player img block */}
@@ -215,7 +266,7 @@ function MusicPlayer() {
 
             {/* previous button */}
             <div>
-              <button className="cursor-pointer">
+              <button onClick={handleBack} className="cursor-pointer">
                 <svg
                   width="24"
                   height="29"
@@ -275,7 +326,7 @@ function MusicPlayer() {
 
             {/* next button */}
             <div>
-              <button className="cursor-pointer">
+              <button onClick={handleNext} className="cursor-pointer">
                 <svg
                   width="25"
                   height="29"
@@ -337,13 +388,15 @@ function MusicPlayer() {
       </div>
 
       {/* about and lyrics info block */}
-      <div className="bg-[radial-gradient(circle_at_center,_#4d1919_10%,_#783a3a_40%,_#b95b3c_50%,_#d67f4c_80%,_#f4caa9_100%)]  rounded-2xl min-w-[clamp(29rem,1.5vw,30rem)] h-[46rem] p-3 flex flex-col justify-center items-center py-6 sm:mt-26 sm:rounded-l-none">
+      <div className="bg-[radial-gradient(circle_at_center,_#4d1919_10%,_#783a3a_40%,_#b95b3c_50%,_#d67f4c_80%,_#f4caa9_100%)]  rounded-2xl lg:max-w-[40rem] h-[56rem] sm:h-[46rem] p-3 flex flex-col justify-center items-center py-6 sm:mt-26 sm:rounded-l-none">
         {/* about artist section */}
         <div className=" h-[18rem] w-[80%] max-sm:h-[20rem] max-sm:flex-col-reverse  max-sm:items-center max-sm:w-[clamp(30rem,1.5vw,33rem)] text-[clamp(1.7rem,1.5vw,2rem)]  text-amber-200 rounded-xl    flex justify-between overflow-hidden p-5">
           {/* artist name and link */}
-          <div className="  w-[50%] sm:text-center flex flex-col justify-center items-center ">
-            <h2 className="text-[clamp(2.rem,1.5vw,3rem)] font-bold ">{name}</h2>
-            <p className="hover:scale-90 transition duration-200 ease-in-out" >
+          <div className="  w-[100%] sm:w-[50%] sm:text-center flex flex-col justify-center items-center ">
+            <h2 className="text-[clamp(2.rem,1.5vw,3rem)] font-bold ">
+              {name}
+            </h2>
+            <p className="hover:scale-90 transition duration-200 ease-in-out">
               {link ? (
                 <Link to={link} target="_blank">
                   Read about artist
@@ -354,9 +407,9 @@ function MusicPlayer() {
             </p>
           </div>
           {/* Artist Photo */}
-          <div className="w-[50%] flex justify-center items-center  overflow-hidden  p-2 rounded-2xl  transition-all duration-300 ">
+          <div className="w-[50%] flex  justify-center items-center     p-2 rounded-2xl  transition-all duration-300 overflow-hidden">
             <img
-              className="h-[100%] object-cover rounded-[20rem] transition-all hover:scale-105 hover:shadow-xl
+              className="h-[100%] w-[100%]object-contain rounded-[20rem] transition-all hover:scale-105 hover:shadow-xl
               "
               src={cover_medium}
               alt="Album cover"
@@ -365,19 +418,19 @@ function MusicPlayer() {
         </div>
 
         {/* track list */}
-        <div className=" h-[30rem] max-sm:max-h-[22rem] w-[90%]  max-sm:w-[30rem] text-[clamp(1.7rem,1.5vw,2rem)] bg-amber-100 rounded-xl text-amber-900 mt-10 overflow-x-clip overflow-y-auto">
+        <div className=" h-[30rem] w-[30rem] lg:w-full text-[clamp(1.7rem,1.5vw,2rem)] bg-amber-100 rounded-xl text-amber-900 mt-10 overflow-x-clip overflow-y-auto scrollbar-none">
           <div>
             {albumData?.tracks?.data?.length > 0 ? (
               albumData.tracks.data.map((track) => (
                 <button
+                  key={track.id}
                   onClick={() => {
-                    setTrackId(track.id);
+                    // setTrackId(track.id);
                     sendUserSelectedTrack(track);
                   }}
                 >
                   <div
-                    key={track.id}
-                    className="w-[95%] h-[6rem]   flex justify-around  border-b-[0.1rem] rounded-[3rem]  shadow-2xl drop-shadow-2xl hover:shadow-2xl hover:drop-shadow-xl hover:shadow-amber-700 hover:scale-105 transition-all duration-200 ease-in-out  mb-4
+                    className="w-[95%] min-h-[6rem]   flex justify-around items-center border-b-[0.1rem] rounded-[3rem]  shadow-2xl drop-shadow-2xl hover:shadow-2xl hover:drop-shadow-xl hover:shadow-amber-700 hover:scale-105 transition-all duration-200 ease-in-out  mb-4
 hover:bg-gradient-to-r from-[#fee685] via-[#fef3c6] to-[#fef3c6] "
                   >
                     {/* cards list thumbnail */}
@@ -394,12 +447,12 @@ hover:bg-gradient-to-r from-[#fee685] via-[#fef3c6] to-[#fef3c6] "
                     </div>
 
                     {/* cards list info */}
-                    <div className="w-[52rem] max-sm:w-[25rem] h-full ml-5 flex  ">
-                      <div className=" h-full flex flex-col justify-center overflow-hidden ">
-                        <h3 className="font-bold text-[clamp(1.3rem,2.5vw,1.5rem)]">
+                    <div className="w-[52rem] max-sm:w-[25rem] h-full ml-5 flex items-center  ">
+                      <div className=" h-full flex flex-col justify-center items-start  ">
+                        <h3 className="w-90 sm:w-100 font-bold text-[clamp(1.2rem,1.5vw,1.3rem)] text-start wrap-normal  ">
                           {track.title}
                         </h3>
-                        <p className="text-[clamp(1.4rem,2.5vw,1.5rem)]">
+                        <p className="text-[clamp(1.2rem,1.5vw,1.3rem)]">
                           {track.artist.name}
                         </p>
                       </div>

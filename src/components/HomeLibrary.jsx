@@ -98,7 +98,7 @@ function HomeLibrary() {
     <>
       <SearchBar />
       <SearchResults />
-      <div className="h-screen w-full mt-15 overflow-y-auto">
+      <div className="h-screen w-full mt-15 overflow-y-auto scrollbar-none">
         {/* genres container */}
 
         <div className="   h-[25rem] flex flex-col mt-10 p-4 items-center  rounded-xl relative">
@@ -238,7 +238,7 @@ function HomeLibrary() {
             <div
               ref={recentRef}
               className=" w-[80%] h-[60rem] grid 
-              sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4  gap-20 px-13 py-2 overflow-x-hidden  scroll-smooth   "
+              sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4  gap-20 px-13 py-2 overflow-x-hidden  scrollbar-none   "
             >
               {/* genre cards */}
               {Array.isArray(recentSongs) &&
