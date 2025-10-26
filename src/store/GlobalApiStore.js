@@ -79,8 +79,18 @@ export const useApiStore = create(persist(
 
 
 // non serialized data. don't know what that means lol
-export const useAudioStore = create((set) => ({
+export const useAudioStore = create((set,get) => ({
   audioRef: new Audio(),
+  audioLoop: false ,
 
-  setAudioRef: (audio) => set({ audioRef: audio })
+  setAudioRef: (audio) => set({ audioRef: audio }),
+
+  setAudioLoop: (audio) => set({audioLoop: audio}),
+
+    toggleAudioLoop: () => {
+    const current = get().audioLoop;
+    const audio = get().audioRef;
+    audio.loop = !current;
+    set({ audioLoop: !current });
+  }
 }));
