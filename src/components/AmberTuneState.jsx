@@ -20,7 +20,7 @@ function AmberTuneState({ isLoading, isError, error }) {
     
        <h1 className=" font-bold text-amber-200 text-6xl mb-5 text-[clamp(2rem,2.5vw,3rem)] ">Looks like there’s a problem with your internet connection.
        </h1>
-       <p className=""> We can’t connect to the server at ambertune.com.</p>
+       <p className=""> We can’t connect to the server at ambertune.com</p>
 
     <div className=" flex flex-col items-start w-[100%] mt-3 mb-10 text-[clamp(1.5rem,2.5vw,1.7rem)] ">
          <h2 className="mb-2">What can you do about it?</h2>

@@ -6,8 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
 import AmberTuneState from "./AmberTuneState";
 
-function MusicPlayer() {
-  // const navigate = useNavigate()
+function MusicPlayer() { 
 
   const {
     progress,
@@ -16,7 +15,7 @@ function MusicPlayer() {
     musicData,
     isPlaying,
     setIsPlaying,
-    trackId,
+    // trackId,
     setTrackId,
     playerData,
   } = useApiStore();
@@ -62,14 +61,7 @@ function MusicPlayer() {
     // Render fallback UI if no song
     return <AmberTuneState isError={true} error="No music available" />;
   }
-
-  // const trackSong =
-  //   musicData?.length > 0
-  //     ? musicData.find((music) => music.id === song.id)
-  //     : null;
-
-  console.log("TrackId", trackId);
-
+ 
   const albumId = song?.album?.id;
 
   const {
@@ -84,20 +76,10 @@ function MusicPlayer() {
   });
 
   // song clicked by the user in the music player
-  let userTrack = albumData?.tracks?.data.find(
-    (trackSong) => trackSong.id === trackId
-  );
+  // let userTrack = albumData?.tracks?.data.find(
+  //   (trackSong) => trackSong.id === trackId
+  // );
 
-  //   useEffect(() => {
-  //     if (song) {
-  //       setPlayerData(song);
-  //       audio.load();
-  //       audio.play();
-  //     }
-  //     else{
-  //  <AmberTuneState isError={true} error="No music available"  />
-  //    }
-  //   }, [song, setPlayerData, audio]);
 
   useEffect(() => {
     if (song) {
@@ -112,8 +94,7 @@ function MusicPlayer() {
   }, [song, setPlayerData, audio]);
 
   // setPlayerData(userTrack)
-  console.log("userTrack", userTrack);
-
+ 
   // music progress bar logic
   //  Handle progress tracking and song switching
   useEffect(() => {
@@ -155,12 +136,7 @@ function MusicPlayer() {
       audio.removeEventListener("ended", handleEnded);
     };
   }, [song]);
-
-  // useEffect(() => {
-  //   if (!song) {
-  //     return <AmberTuneState isError={true} message="No song selected" />;
-  //   }
-  // });
+ 
 
   const id = playerData?.id;
   const link = playerData?.link;
@@ -183,23 +159,21 @@ function MusicPlayer() {
   if (isError) return <AmberTuneState isError={true} error={error?.message} />;
 
   return (
-    <div className="h-screen grid md:grid-cols-2 max-sm:grid-cols-1  justify-items-center place-items-start max-sm:flex max-sm:flex-col max-sm:place-items-center max-sm:gap-46  ">
+    <div className="h-[100%] flex flex-col items-center gap-y-40 sm:flex-row sm:justify-center  sm:items-center">
       {/* music player card */}
-      <div
-        key={id}
-        className="bg-amber-200 min-w-[36rem] max-w-[56rem] max-sm:min-w-[clamp(29rem,1.5vw,30rem)] h-[46rem] p-3 flex flex-col justify-center items-center rounded-2xl mt-26 py-6
+      <div key={id} className="bg-amber-200 min-w-[36rem] max-w-[56rem] max-sm:min-w-[clamp(29rem,1.5vw,30rem)] h-[46rem] p-3 flex flex-col justify-center items-center rounded-2xl mt-26 sm:rounded-r-none py-6
 "
       >
         {/* player img block */}
-        <div className="bg-amber-800   overflow-hidden  p-2 rounded-2xl shadow-md hover:shadow-xl transition-all duration-300">
+        <div className="bg-amber-900   overflow-hidden p-2 rounded-2xl shadow-md hover:shadow-xl transition-all duration-300">
           <img
-            className="w-full h-full object-cover transition-transform duration-300 hover:scale-105 hover:shadow-xl"
+            className="w-full h-full object-cover transition-transform duration-300 hover:scale-105 hover:shadow-xl rounded-2xl"
             src={cover_medium}
             alt="Album cover"
           />
         </div>
         {/* music player control block */}
-        <div className="mt-7 w-[90%] ">
+        <div className="mt-7 w-[90%]  sm:w-[80%] ">
           {/* artist info */}
           <div className="text-amber-900">
             <h2 className="font-extrabold text-[clamp(1.6rem,1.5vw,1.8rem)]">
@@ -246,12 +220,12 @@ function MusicPlayer() {
                   width="24"
                   height="29"
                   viewBox="0 0 24 29"
-                  fill="none"
+                  fill=" #7B3306"
                   xmlns="http://www.w3.org/2000/svg"
                 >
                   <path
                     d="M23.7708 2.67188V25.849C23.7664 26.2593 23.6524 26.661 23.4403 27.0131C23.2282 27.3652 22.9257 27.6549 22.5638 27.8526C22.2019 28.0502 21.7936 28.1488 21.3808 28.138C20.968 28.1273 20.5654 28.0077 20.2144 27.7915L2.80829 16.9753V26.9887C2.80829 27.2956 2.6856 27.5899 2.46719 27.8069C2.24879 28.0239 1.95258 28.1458 1.64371 28.1458C1.33484 28.1458 1.03863 28.0239 0.820225 27.8069C0.601823 27.5899 0.479126 27.2956 0.479126 26.9887V1.53212C0.479126 1.22523 0.601823 0.930914 0.820225 0.713912C1.03863 0.496911 1.33484 0.375 1.64371 0.375C1.95258 0.375 2.24879 0.496911 2.46719 0.713912C2.6856 0.930914 2.80829 1.22523 2.80829 1.53212V11.5455L20.2144 0.729367C20.565 0.510727 20.968 0.389158 21.3817 0.377247C21.7954 0.365336 22.2048 0.463516 22.5675 0.661622C22.9302 0.859728 23.233 1.15056 23.4445 1.504C23.6561 1.85745 23.7687 2.26065 23.7708 2.67188Z"
-                    fill="#973C00"
+                    fill=" #7B3306"
                   />
                 </svg>
               </button>
@@ -287,7 +261,7 @@ function MusicPlayer() {
                     className="w-16 h-16 sm:w-[4rem]"
                   >
                     <path
-                      fill="none"
+                      fill="#FEF3C6"
                       d="M11 23a1 1 0 0 1-1-1V10a1 1 0 0 1 1.447-.894l12 6a1 1 0 0 1 0 1.788l-12 6A1 1 0 0 1 11 23"
                     />
                     <path
@@ -306,12 +280,12 @@ function MusicPlayer() {
                   width="25"
                   height="29"
                   viewBox="0 0 25 29"
-                  fill="none"
+                  fill=" #7B3306"
                   xmlns="http://www.w3.org/2000/svg"
                 >
                   <path
                     d="M0.916666 2.8503V26.5664C0.921118 26.9862 1.03784 27.3973 1.25486 27.7576C1.47188 28.1179 1.78141 28.4143 2.15172 28.6166C2.52203 28.8189 2.93981 28.9197 3.36224 28.9087C3.78467 28.8977 4.19657 28.7753 4.55572 28.5541L22.3667 17.4864V27.7326C22.3667 28.0467 22.4922 28.3478 22.7157 28.5699C22.9392 28.7919 23.2423 28.9167 23.5583 28.9167C23.8744 28.9167 24.1775 28.7919 24.401 28.5699C24.6244 28.3478 24.75 28.0467 24.75 27.7326V1.68403C24.75 1.37 24.6244 1.06884 24.401 0.846794C24.1775 0.624746 23.8744 0.5 23.5583 0.5C23.2423 0.5 22.9392 0.624746 22.7157 0.846794C22.4922 1.06884 22.3667 1.37 22.3667 1.68403V11.9303L4.55572 0.862609C4.19703 0.638883 3.78467 0.514487 3.36134 0.502299C2.93801 0.490111 2.51909 0.590575 2.14796 0.793288C1.77684 0.996001 1.46699 1.29359 1.2505 1.65526C1.03402 2.01692 0.91876 2.42951 0.916666 2.8503Z"
-                    fill="#973C00"
+                    fill="#7B3306"
                   />
                 </svg>
               </button>
@@ -329,28 +303,28 @@ function MusicPlayer() {
                 >
                   <path
                     d="M2.58331 16.2821C2.58331 11.1059 6.78376 6.94125 11.9241 6.94125H33.7194"
-                    stroke="#973C00"
+                    stroke="#7B3306"
                     stroke-width="4"
                     stroke-linecap="round"
                     stroke-linejoin="round"
                   />
                   <path
                     d="M29.049 2.27084L33.7194 6.94125L29.049 11.6117"
-                    stroke="#973C00"
+                    stroke="#7B3306"
                     stroke-width="4"
                     stroke-linecap="round"
                     stroke-linejoin="round"
                   />
                   <path
                     d="M33.7194 14.7253C33.7194 19.9015 29.519 24.0661 24.3786 24.0661H2.58331"
-                    stroke="#973C00"
+                    stroke="#7B3306"
                     stroke-width="4"
                     stroke-linecap="round"
                     stroke-linejoin="round"
                   />
                   <path
                     d="M7.25373 28.7365L2.58331 24.0661L7.25373 19.3957"
-                    stroke="#973C00"
+                    stroke="#7B3306"
                     stroke-width="4"
                     stroke-linecap="round"
                     stroke-linejoin="round"
@@ -363,12 +337,13 @@ function MusicPlayer() {
       </div>
 
       {/* about and lyrics info block */}
-      <div className="bg-amber-900 flex flex-col items-center  justify-center w-full h-[45rem]  rounded-2xl  max-sm:min-w-[30rem] mt-28 max-sm:mt-[-5rem]  max-sm:h-[30rem] p-5">
+      <div className="bg-[radial-gradient(circle_at_center,_#4d1919_10%,_#783a3a_40%,_#b95b3c_50%,_#d67f4c_80%,_#f4caa9_100%)]  rounded-2xl min-w-[clamp(29rem,1.5vw,30rem)] h-[46rem] p-3 flex flex-col justify-center items-center py-6 sm:mt-26 sm:rounded-l-none">
         {/* about artist section */}
-        <div className=" h-[18rem] w-[80%]  max-sm:w-[30rem] text-[clamp(1.7rem,1.5vw,2rem)]  text-amber-200 rounded-xl  bg-[radial-gradient(circle_at_center,_#4d1919_10%,_#783a3a_40%,_#b95b3c_50%,_#d67f4c_80%,_#f4caa9_100%)]  flex justify-between overflow-hidden">
-          <div className="  w-[50%] flex flex-col justify-center items-center hover:text-[2.3rem] transition duration-200 ease-in-out">
-            <h2 className="text-[clamp(2.rem,1.5vw,3rem)]">{name}</h2>
-            <p>
+        <div className=" h-[18rem] w-[80%] max-sm:h-[20rem] max-sm:flex-col-reverse  max-sm:items-center max-sm:w-[clamp(30rem,1.5vw,33rem)] text-[clamp(1.7rem,1.5vw,2rem)]  text-amber-200 rounded-xl    flex justify-between overflow-hidden p-5">
+          {/* artist name and link */}
+          <div className="  w-[50%] sm:text-center flex flex-col justify-center items-center ">
+            <h2 className="text-[clamp(2.rem,1.5vw,3rem)] font-bold ">{name}</h2>
+            <p className="hover:scale-90 transition duration-200 ease-in-out" >
               {link ? (
                 <Link to={link} target="_blank">
                   Read about artist
@@ -379,9 +354,10 @@ function MusicPlayer() {
             </p>
           </div>
           {/* Artist Photo */}
-          <div className="w-[50%]   flex justify-center items-center  overflow-hidden  p-2 rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 ">
+          <div className="w-[50%] flex justify-center items-center  overflow-hidden  p-2 rounded-2xl  transition-all duration-300 ">
             <img
-              className="h-[100%] object-cover rounded-[20rem] transition-transform duration-300 hover:scale-105 hover:shadow-xl"
+              className="h-[100%] object-cover rounded-[20rem] transition-all hover:scale-105 hover:shadow-xl
+              "
               src={cover_medium}
               alt="Album cover"
             />
@@ -389,7 +365,7 @@ function MusicPlayer() {
         </div>
 
         {/* track list */}
-        <div className=" h-[18rem] w-[80%]  max-sm:w-[30rem] text-[clamp(1.7rem,1.5vw,2rem)]  bg-amber-100 rounded-xl text-amber-900 mt-10 overflow-x-clip overflow-y-auto">
+        <div className=" h-[30rem] max-sm:max-h-[22rem] w-[90%]  max-sm:w-[30rem] text-[clamp(1.7rem,1.5vw,2rem)] bg-amber-100 rounded-xl text-amber-900 mt-10 overflow-x-clip overflow-y-auto">
           <div>
             {albumData?.tracks?.data?.length > 0 ? (
               albumData.tracks.data.map((track) => (
@@ -418,9 +394,9 @@ hover:bg-gradient-to-r from-[#fee685] via-[#fef3c6] to-[#fef3c6] "
                     </div>
 
                     {/* cards list info */}
-                    <div className="w-[52rem] h-full pl-5 flex  justify-between ">
-                      <div className=" h-full flex flex-col justify-center overflow-ellipsis ">
-                        <h3 className="font-bold text-[clamp(1.5rem,2.5vw,1.4rem)] line-clamp-3">
+                    <div className="w-[52rem] max-sm:w-[25rem] h-full ml-5 flex  ">
+                      <div className=" h-full flex flex-col justify-center overflow-hidden ">
+                        <h3 className="font-bold text-[clamp(1.3rem,2.5vw,1.5rem)]">
                           {track.title}
                         </h3>
                         <p className="text-[clamp(1.4rem,2.5vw,1.5rem)]">
