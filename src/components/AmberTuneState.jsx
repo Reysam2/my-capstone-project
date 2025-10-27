@@ -39,7 +39,7 @@ function AmberTuneState({ isLoading, isError, error }) {
   return (
     <>
     
-    <div className="w-full h-[100%] bg-[linear-gradient(135deg,_#4d1919_0%,_#783a3a_25%,_#b95b3c_50%,_#d67f4c_75%,_#f4caa9_100%)] absolute  ">
+    <div className="w-[100%] h-[100%] bg-[linear-gradient(135deg,_#4d1919_0%,_#783a3a_25%,_#b95b3c_50%,_#d67f4c_75%,_#f4caa9_100%)] absolute  ">
       <div className="w-full h-screen flex justify-center items-center absolute">
         {content}
       </div>

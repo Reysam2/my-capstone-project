@@ -80,7 +80,7 @@ const playMusic = (preview) => {
             id="search_card"
             className="   flex  justify-center fixed inset-[-6rem] items-center overflow-y-auto bg-amber-70 backdrop-blur-md z-10  border-red-400"
           >
-            <div className=" bg-gradient-to-br from-amber-100 via-amber-200 to-amber-100   border-amber-50 h-[45rem] mt-10 rounded-xl text-amber-900 flex flex-col w-[29.5rem] sm:w-[67rem] relative max-sm:items-center pt-6 shadow-xl drop-shadow-xl overflow-y-scroll overflow-x-clip transition-all duration-200 ease-in-out z-50 ">
+            <div className=" bg-gradient-to-br from-amber-100 via-amber-200 to-amber-100   border-amber-50 h-[45rem] mt-10 rounded-xl text-amber-900 flex flex-col w-[29.5rem] sm:w-[67rem] relative max-sm:items-center pt-6 shadow-xl drop-shadow-xl overflow-y-scroll overflow-x-clip transition-all duration-200 ease-in-out z-50 scrollbar-none ">
               <div className="w-[100%] flex justify-end items-center h-[5rem]">
                 <button
                   id="searchCardBtn"
@@ -226,7 +226,8 @@ const playMusic = (preview) => {
                         {/* cards list */}
                         <div
                           className="w-[95%] h-[5rem]   flex justify-around  border-b-[0.1rem] rounded-[3rem]  shadow-2xl drop-shadow-2xl hover:shadow-2xl hover:drop-shadow-xl hover:shadow-amber-700 hover:scale-105 transition-all duration-200 ease-in-out 
-                  hover:bg-gradient-to-r from-[#fee685] via-[#fef3c6] to-[#fef3c6] "
+                  hover:bg-gradient-to-r from-[#fee685] via-[#fef3c6] to-[#fef3c6]
+                    active:bg-gradient-to-r from-[#fee685] via-[#fef3c6] to-[#fef3c6] "
                         >
                           {/* cards list thumbnail */}
                           <div className="w-[4.4rem] h-full  flex items-center ">
