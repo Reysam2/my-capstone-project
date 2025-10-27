@@ -177,6 +177,7 @@ function MusicPlayer() {
       audio.src = track?.preview; // set new audio source
       // play new track
       audio.currentTime = 0;
+       setProgress(0)
       audio.play(); // play new track
       // audio.loop = true;
       audio.onended = ()=> setIsPlaying(false)
@@ -198,6 +199,7 @@ function MusicPlayer() {
    
       setIsPlaying(true); // mark as playing
           setCurrentSong(track.preview);
+          setProgress(0)
       audio.play(); // play new track
       // audio.loop = true;
           audio.onended = ()=> setIsPlaying(false)
@@ -253,7 +255,7 @@ function MusicPlayer() {
           <div className="flex justify-around items-center">
             {/* shuffle button */}
             <div>
-              <button className="cursor-pointer">
+              <button className="cursor-pointer     active:bg-amber-300">
                 <svg
                   width="33"
                   height="30"
@@ -274,13 +276,14 @@ function MusicPlayer() {
 
             {/* previous button */}
             <div>
-              <button onClick={handleBack} className="cursor-pointer">
+              <button onClick={handleBack} className="cursor-pointer      active:bg-amber-300 ">
                 <svg
                   width="24"
                   height="29"
                   viewBox="0 0 24 29"
                   fill=" #7B3306"
                   xmlns="http://www.w3.org/2000/svg"
+                  className="active:bg-amber-300"
                 >
                   <path
                     d="M23.7708 2.67188V25.849C23.7664 26.2593 23.6524 26.661 23.4403 27.0131C23.2282 27.3652 22.9257 27.6549 22.5638 27.8526C22.2019 28.0502 21.7936 28.1488 21.3808 28.138C20.968 28.1273 20.5654 28.0077 20.2144 27.7915L2.80829 16.9753V26.9887C2.80829 27.2956 2.6856 27.5899 2.46719 27.8069C2.24879 28.0239 1.95258 28.1458 1.64371 28.1458C1.33484 28.1458 1.03863 28.0239 0.820225 27.8069C0.601823 27.5899 0.479126 27.2956 0.479126 26.9887V1.53212C0.479126 1.22523 0.601823 0.930914 0.820225 0.713912C1.03863 0.496911 1.33484 0.375 1.64371 0.375C1.95258 0.375 2.24879 0.496911 2.46719 0.713912C2.6856 0.930914 2.80829 1.22523 2.80829 1.53212V11.5455L20.2144 0.729367C20.565 0.510727 20.968 0.389158 21.3817 0.377247C21.7954 0.365336 22.2048 0.463516 22.5675 0.661622C22.9302 0.859728 23.233 1.15056 23.4445 1.504C23.6561 1.85745 23.7687 2.26065 23.7708 2.67188Z"
@@ -296,7 +299,7 @@ function MusicPlayer() {
                 onClick={() => {
                   playMusic(preview);
                 }}
-                className="cursor-pointer"
+                className="cursor-pointer  active:bg-amber-300"
               >
                 {isPlaying && currentSong ? (
                   <svg
@@ -334,7 +337,7 @@ function MusicPlayer() {
 
             {/* next button */}
             <div>
-              <button onClick={handleNext} className="cursor-pointer">
+              <button onClick={handleNext} className="cursor-pointer  active:bg-amber-300">
                 <svg
                   width="25"
                   height="29"
@@ -352,7 +355,7 @@ function MusicPlayer() {
 
             {/* loop/repeat button  */}
             <div>
-              <button onClick={handleLoop} className="cursor-pointer">
+              <button onClick={handleLoop} className="cursor-pointer  active:bg-amber-300">
                { audioLoop && currentIndex ? 
                  (<svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="-2 -3 24 24"><rect x="-2" y="-3" width="36" height="36" fill="none"/><path fill="#7B3306" d="m11.774 15l1.176 1.176a1 1 0 0 1-1.414 1.414l-2.829-2.828a1 1 0 0 1 0-1.414l2.829-2.829a1 1 0 0 1 1.414 1.415L11.883 13H14a4 4 0 1 0 0-8a1 1 0 0 1 0-2a6 6 0 1 1 0 12zM8.273 3L7.176 1.904A1 1 0 0 1 8.591.489l2.828 2.829a1 1 0 0 1 0 1.414L8.591 7.56a1 1 0 0 1-1.415-1.414L8.323 5H6a4 4 0 1 0 0 8a1 1 0 0 1 0 2A6 6 0 1 1 6 3z"/></svg>):( <svg
                   width="36"
@@ -442,7 +445,7 @@ function MusicPlayer() {
                 >
                   <div
                     className="w-[95%] min-h-[6rem]   flex justify-around items-center border-b-[0.1rem] rounded-[3rem]  shadow-2xl drop-shadow-2xl hover:shadow-2xl hover:drop-shadow-xl hover:shadow-amber-700 hover:scale-105 transition-all duration-200 ease-in-out  mb-4
-hover:bg-gradient-to-r from-[#fee685] via-[#fef3c6] to-[#fef3c6] "
+hover:bg-gradient-to-r from-[#fee685] via-[#fef3c6] to-[#fef3c6]    active:bg-gradient-to-r from-[#fee685] via-[#fef3c6] to-[#fef3c6] "
                   >
                     {/* cards list thumbnail */}
                     <div className="w-[4.4rem] h-full  flex items-center ml-7">

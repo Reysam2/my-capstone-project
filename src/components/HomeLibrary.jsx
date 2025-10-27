@@ -3,6 +3,8 @@ import SearchBar from "./SearchBar";
 import SearchResults from "./SearchResults";
 import { useApiStore, useAudioStore } from "../store/GlobalApiStore";
 import { useNavigate } from "react-router-dom";
+import {fetchGenreData} from "../services/GenreFetchService"
+import { useQuery } from "@tanstack/react-query";
 
 function HomeLibrary() {
   const navigate = useNavigate();
@@ -94,6 +96,18 @@ function HomeLibrary() {
     return () => clearInterval(interval);
   }, []); // rerun if recentSongs changes
 
+
+  const {data: genreData} = useQuery({
+    queryKey: ["Genre"],
+  queryFn: fetchGenreData,
+  staleTime: 1000 * 60 * 60,
+  }) 
+
+  console.log(genreData)
+
+ 
+
+
   return (
     <>
       <SearchBar />
@@ -163,13 +177,13 @@ function HomeLibrary() {
               className=" w-[80%]    gap-10 gap-y-17 px-13 py-2 overflow-y-hidden grid grid-cols-1  sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 relative  self-center"
             >
               {/* genre cards */}
-              {Array.from({ length: 10 }).map((_, i) => (
+              {Array.from({ length: 5 }).map((_, i) => (
                 <div
                   key={i}
-                  className="bg-amber-950 flex-shrink-0 w-[clamp(14rem,1.5vw,17rem)] h-[clamp(12rem,1.5vw,17rem)] rounded-xl flex flex-col items-center justify-center relative"
+                  className="bg-amber-950 flex-shrink-0 w-[clamp(14rem,1.5vw,17rem)] h-[clamp(12rem,1.5vw,17rem)] rounded-xl flex flex-col items-center justify-center relative overflow-hidden hover:scale-110 animate-pulse transition-all duration-200 ease-in-out"
                 >
-                  <h1 className="text-amber-200  absolute">Jazz {i + 1}</h1>
-                  <div>Image 🧡</div>
+                  <h1 className="text-amber-100  absolute font-bold">{genreData?.name}</h1>
+                  <div><img src={genreData?.picture_xl} alt="" /></div>
                 </div>
               ))}
             </div>
